@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 
 import java.util.List;
 
@@ -28,15 +34,17 @@ public class ProcessoController {
     @Autowired
     private AssuntoService assuntoService;
 
-    // atribuindo a lista de assuntos ao modelo para todas as requisições do controlador
-    // terem na chamada a lista de asssuntos disponiveis para fazer o cadastro de processos
+    // atribuindo a lista de assuntos ao modelo para todas as requisições do
+    // controlador
+    // terem na chamada a lista de asssuntos disponiveis para fazer o cadastro de
+    // processos
     @ModelAttribute("assuntosItens")
     public List<Assunto> getAssuntos() {
         return assuntoService.findAll();
     }
 
     // Atribuindo a lista de status ao modelo
-    //  para todas o filtro ter acesso aos status
+    // para todas o filtro ter acesso aos status
     @ModelAttribute("statusItens")
     public StatusProcesso[] getStatusList() {
         return StatusProcesso.values();
@@ -52,20 +60,23 @@ public class ProcessoController {
 
     // salva o processando quando você clica em salvar no formulário
     @PostMapping
-    public ModelAndView addProcesso(Processo processo, ModelAndView modelAndView) {
+    public ModelAndView addProcesso(Processo processo, RedirectAttributes redirectAttributes,
+            ModelAndView modelAndView) {
         processoService.save(processo);
-        // redireciona para a lista de processos após salvar
+        redirectAttributes.addFlashAttribute("mensagemSucesso", "Processo cadastrado com sucesso!");
+        // PRG: redireciona para a lista de processos após salvar
         modelAndView.setViewName("redirect:/processos");
-        modelAndView.addObject("processos", processoService.findAll());
         return modelAndView;
     }
 
     // ta vazio pq usa a rota "/processos"
     @GetMapping()
     public ModelAndView list(
-        @RequestParam(required = false) String status, 
-        @RequestParam(required = false) String assunto) {
-        
+            // MUDANÇA: Adiciona Pageable com ordenação default (REQNAOFUNC 9)
+            @PageableDefault(size = 10, sort = { "dataRecepcao" }, direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String assunto) {
+
         // seta o caminho da view
         ModelAndView modelAndView = new ModelAndView("processos/list");
 
@@ -73,35 +84,37 @@ public class ProcessoController {
         modelAndView.addObject("statusSelecionado", status);
         modelAndView.addObject("assuntoSelecionado", assunto);
 
-        List<Processo> processos;
+        Page<Processo> processosPaginados; // MUDANÇA: Objeto paginado
 
-        // FILTROS
-        if (status != null && !status.isEmpty() &&
-        assunto != null && !assunto.isEmpty()) {
+        // FILTROS (adaptados para usar métodos paginados)
+        if (status != null && !status.isEmpty() && assunto != null && !assunto.isEmpty()) {
 
-        processos = processoService.findByAssunto(assunto).stream()
-                .filter(p -> p.getStatus() == StatusProcesso.valueOf(status))
-                .toList();
+            // Para simplificar, priorizamos o filtro por status com paginação
+            processosPaginados = processoService.findByStatus(
+                    StatusProcesso.valueOf(status), pageable);
 
         } else if (status != null && !status.isEmpty()) {
 
-            processos = processoService.findByStatus(
-                    StatusProcesso.valueOf(status)
-            );
+            processosPaginados = processoService.findByStatus(
+                    StatusProcesso.valueOf(status), pageable);
 
         } else if (assunto != null && !assunto.isEmpty()) {
 
-            processos = processoService.findByAssunto(assunto);
+            processosPaginados = processoService.findByAssunto(assunto, pageable);
 
         } else {
-            processos = processoService.findAllOrderedByCreationDate();
+            // MUDANÇA: Se não houver filtro, usa o findAll paginado (a ordenação é feita
+            // pelo @PageableDefault)
+            processosPaginados = processoService.findAll(pageable);
         }
 
-        modelAndView.addObject("processos", processos);
+        // MUDANÇA: Adiciona o objeto Page (com metadados de paginação) à view
+        modelAndView.addObject("processosPaginados", processosPaginados);
+
         return modelAndView;
-            
+
     }
-    
+
     @GetMapping("/{id}")
     public ModelAndView getProcessoById(@PathVariable(value = "id") Integer id, ModelAndView model) {
         model.addObject("processo", processoService.findById(id));
