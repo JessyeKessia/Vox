@@ -3,6 +3,8 @@ package br.edu.ifpb.pweb2.vox.service;
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -16,6 +18,11 @@ public class AlunoService implements br.edu.ifpb.pweb2.vox.service.Service<Aluno
         return alunoRepository.findAll();
     }
 
+    // NOVO MÉTODO: Paginação (sem @Override)
+    public Page<Aluno> findAll(Pageable pageable) {
+        return alunoRepository.findAll(pageable);
+    }
+
     @Override
     public Aluno findById(Long id) {
         return alunoRepository.findById(id).orElse(null);
@@ -23,7 +30,8 @@ public class AlunoService implements br.edu.ifpb.pweb2.vox.service.Service<Aluno
 
     @Override
     public Aluno save(Aluno aluno) {
-        if (alunoRepository.existsByLogin(aluno.getLogin()) || alunoRepository.existsByMatricula(aluno.getMatricula())) {
+        if (alunoRepository.existsByLogin(aluno.getLogin())
+                || alunoRepository.existsByMatricula(aluno.getMatricula())) {
             throw new RuntimeException("Login ou matrícula já utilizados");
         }
         return alunoRepository.save(aluno);
