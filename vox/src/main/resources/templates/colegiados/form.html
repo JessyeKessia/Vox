@@ -1,37 +1,137 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Colegiado</title>
-</head>
-<body>
-    <h1>Cadastro/edição de Colegiado</h1>
-    <form th:action="@{/colegiados}" th:object="${colegiado}" method="post">
-        <input type="hidden" th:field="*{id}" />
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title='Cadastro/Edição de Colegiado')}"
+>
+  <body>
+    <section class="py-4">
+      <div class="container-fluid">
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1 class="text-white h4 mb-1">Cadastro/edição de Colegiado</h1>
+              <p class="text-white small mb-0">
+                Defina as informações do colegiado, período de vigência e
+                membros participantes.
+              </p>
+            </div>
 
-        <label for="descricao">Descrição:</label><br>
-        <input type="text" id="descricao" th:field="*{descricao}" required/><br><br>
+            <form
+              th:action="@{/colegiados}"
+              th:object="${colegiado}"
+              method="post"
+              class="row g-3"
+            >
+              <input type="hidden" th:field="*{id}" />
 
-        <label for="portaria">Portaria:</label><br>
-        <input type="text" id="portaria" th:field="*{portaria}" /><br><br>
+              <div class="col-md-6">
+                <label
+                  for="descricao"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Descrição
+                </label>
+                <input
+                  type="text"
+                  id="descricao"
+                  th:field="*{descricao}"
+                  required
+                  class="form-control"
+                />
+              </div>
 
-        <label for="curso">Curso:</label><br>
-        <input type="text" id="curso" th:field="*{curso}" /><br><br>
+              <div class="col-md-6">
+                <label
+                  for="portaria"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Portaria
+                </label>
+                <input
+                  type="text"
+                  id="portaria"
+                  th:field="*{portaria}"
+                  class="form-control"
+                />
+              </div>
 
-        <label for="dataInicio">Data Início:</label><br>
-        <input type="date" id="dataInicio" th:field="*{dataInicio}" /><br><br>
+              <div class="col-md-6">
+                <label
+                  for="curso"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Curso
+                </label>
+                <input
+                  type="text"
+                  id="curso"
+                  th:field="*{curso}"
+                  class="form-control"
+                />
+              </div>
 
-        <label for="dataFim">Data Fim:</label><br>
-        <input type="date" id="dataFim" th:field="*{dataFim}" /><br><br>
+              <div class="col-md-3">
+                <label
+                  for="dataInicio"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Data início
+                </label>
+                <input
+                  type="date"
+                  id="dataInicio"
+                  th:field="*{dataInicio}"
+                  class="form-control"
+                />
+              </div>
 
-        <label>Membros:</label><br>
-        <select th:field="*{membros}" multiple size="5">
-            <option th:each="prof : ${professores}" th:value="${prof.id}" th:text="${prof.nome}"></option>
-        </select>
-        <br><br>
+              <div class="col-md-3">
+                <label
+                  for="dataFim"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Data fim
+                </label>
+                <input
+                  type="date"
+                  id="dataFim"
+                  th:field="*{dataFim}"
+                  class="form-control"
+                />
+              </div>
 
-        <button type="submit">Salvar</button>
-        <a th:href="@{/colegiados}">Cancelar</a>
-    </form>
-</body>
+              <div class="col-12">
+                <label class="form-label small text-uppercase text-white">
+                  Membros
+                </label>
+                <select
+                  th:field="*{membros}"
+                  multiple
+                  size="6"
+                  class="form-select"
+                >
+                  <option
+                    th:each="prof : ${professores}"
+                    th:value="${prof.id}"
+                    th:text="${prof.nome}"
+                  ></option>
+                </select>
+                <small class="text-white">
+                  Segure Ctrl (ou Cmd no macOS) para selecionar ou desmarcar
+                  vários professores.
+                </small>
+              </div>
+
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/colegiados}" class="btn btn-light border">
+                  Cancelar
+                </a>
+                <button type="submit" class="btn btn-success">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>
