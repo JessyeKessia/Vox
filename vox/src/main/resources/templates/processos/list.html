@@ -19,17 +19,15 @@
                 <th>Número</th>
                 <th>Data de recepção</th>
                 <th>Status</th>
-                <th>Ações</th>
+                <th>Assunto</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="p : ${processos}">
                 <td th:text="${p.numero}">--</td>
                 <td th:text="${#temporals.format(p.dataRecepcao, 'dd/MM/yyyy')}">--/--/----</td>
-+               <td th:text="${p.status}">--</td>
-                <td>
-                    <a th:href="@{/processos/{id}(id=${p.id})}">Editar</a>
-                </td>
+                <td th:text="${p.status}">--</td>
+                <td th:text="${p.assunto.nome}">--</td>
             </tr>
         </tbody>
     </table>
