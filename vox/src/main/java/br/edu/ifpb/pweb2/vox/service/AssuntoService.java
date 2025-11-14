@@ -21,7 +21,7 @@ public class AssuntoService implements Service<Assunto, Integer> {
 
     @Override
     public Assunto findById(Integer id) {
-        return assuntoRepository.findById(id);
+        return assuntoRepository.findById(id).orElse(null);
     }
 
     @Override

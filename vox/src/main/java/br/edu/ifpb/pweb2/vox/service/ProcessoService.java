@@ -21,7 +21,7 @@ public class ProcessoService implements Service<Processo, Integer> {
 
     @Override
     public Processo findById(Integer id) {
-        return processoRepository.findById(id);
+        return processoRepository.findById(id).orElse(null);
     }
 
     @Override
