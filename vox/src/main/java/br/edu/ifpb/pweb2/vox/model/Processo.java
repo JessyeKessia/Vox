@@ -1,35 +1,47 @@
 package br.edu.ifpb.pweb2.vox.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+// import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import br.edu.ifpb.pweb2.vox.types.StatusProcesso;
+import br.edu.ifpb.pweb2.vox.types.TipoDecisao;
 
 
-@Entity
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
-public class Processo {
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @ManyToOne
+// @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Processo implements Serializable {
+    private static final long serialVersionUID = 1L;
+    // @Id 
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // tem que trocar para long por causa do banco
+    private Integer id;
+
+    // @ManyToOne
     private Assunto assunto;
 
-    @NotBlank
-    @Column(columnDefinition = "TEXT")
-    private String requerimento;
+    private String numero;
+    
+    private LocalDate dataRecepcao = LocalDate.now();
 
-    @ManyToOne
-    private User aluno;
+    private LocalDate dataDistribuicao;
 
-    @ManyToOne
-    private User relator; // professor relator
+    private LocalDate dataParecer;
 
-    @Enumerated(EnumType.STRING)
-    private StatusProcesso status = StatusProcesso.CRIADO;
+    private String descricao;
 
-    private LocalDateTime dataCriacao = LocalDateTime.now();
+    private StatusProcesso status;
+
+    // @Lob
+    private byte[] parecer;
+
+    // @Enumerated(EnumType.STRING)
+    private TipoDecisao decisaoRelator;
 }
 
