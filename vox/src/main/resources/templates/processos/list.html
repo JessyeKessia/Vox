@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Processos</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h1>Processos</h1>
+
+    <p><a th:href="@{/processos/form}">Novo processo</a></p>
+ <table>
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Data de recepção</th>
+                <th>Status</th>
+                <th>Assunto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${processos}">
+                <td th:text="${p.numero}">--</td>
+                <td th:text="${#temporals.format(p.dataRecepcao, 'dd/MM/yyyy')}">--/--/----</td>
+                <td th:text="${p.status}">--</td>
+                <td th:text="${p.assunto.nome}">--</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Processo</title>
+</head>
+<body>
+
+    <h1>Vox - Cadastro de Processo</h1>
+
+    <div th:if="${mensagem}" style="color: rgb(221, 40, 40);" th:text="${mensagem}"></div>
+
+    <form th:action="@{/processos}" th:object="${processo}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <label for="assunto">Assunto:</label><br>
+        <select id="assunto" th:field="*{assunto.id}" required>
+            <option value="">Selecione um assunto...</option>
+            <option th:each="ass : ${assuntosItens}" 
+                    th:value="${ass.id}" 
+                    th:text="${ass.nome}">
+            </option>
+        </select>
+        <br><br>
+
+        <label for="requerimento">Requerimento:</label><br>
+        <textarea id="requerimento" th:field="*{descricao}" 
+                  rows="5" cols="50" placeholder="Digite aqui a descrição do seu requerimento..." required>
+        </textarea>
+        <br><br>
+
+        <button type="submit">Salvar</button>
+        <a th:href="@{/processos}">Cancelar</a>
+    </form>
+
+</body>
+</html>

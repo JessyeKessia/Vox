@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Assunto</title>
+</head>
+<body>
+
+    <h1>Cadastrar Assunto</h1>
+
+    <p th:if="${mensagem}" th:text="${mensagem}" style="color:green;"></p>
+
+    <form th:action="@{/assuntos}" th:object="${assunto}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <label for="nome">Nome do Assunto:</label><br>
+        <input type="text" id="nome" th:field="*{nome}" required /><br><br>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <br>
+    <a th:href="@{/assuntos}">Voltar à lista</a>
+
+</body>
+</html>
