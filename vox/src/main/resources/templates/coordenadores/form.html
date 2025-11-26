@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastrar Coordenador</title>
+</head>
+<body>
+    <h1>Cadastrar Coordenador</h1>
+    <form th:action="@{/coordenadores}" th:object="${coordenador}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" th:field="*{nome}" required /><br><br>
+        <label for="fone">Fone:</label><br>
+        <input type="text" id="fone" th:field="*{fone}" required /><br><br>
+        <label for="login">Login:</label><br>
+        <input type="text" id="login" th:field="*{login}" required /><br><br>
+        <label for="senha">Senha:</label><br>
+        <input type="password" id="senha" th:field="*{senha}" required /><br><br>
+        <button type="submit">Salvar</button>
+    </form>
+    <br>
+    <a th:href="@{/coordenadores}">Voltar à lista</a>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Colegiados</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h1>Colegiados</h1>
+    <p><a th:href="@{/colegiados/form}">Novo colegiado</a></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descrição</th>
+                <th>Portaria</th>
+                <th>Curso</th>
+                <th>Data início</th>
+                <th>Membros</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${colegiados}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.descricao}"></td>
+                <td th:text="${c.portaria}"></td>
+                <td th:text="${c.curso}"></td>
+                <td th:text="${#temporals.format(c.dataInicio, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <span th:each="m : ${c.membros}" th:text="${m.nome + ' '}" />
+                </td>
+                <td>
+                    <a th:href="@{'/colegiados/' + ${c.id}}">Editar</a>
+                    <a th:href="@{'/colegiados/delete/' + ${c.id}}" onclick="return confirm('Tem certeza?')">Remover</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
