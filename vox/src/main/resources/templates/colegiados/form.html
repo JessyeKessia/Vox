@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Colegiado</title>
+</head>
+<body>
+    <h1>Cadastro/edição de Colegiado</h1>
+    <form th:action="@{/colegiados}" th:object="${colegiado}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <label for="descricao">Descrição:</label><br>
+        <input type="text" id="descricao" th:field="*{descricao}" required/><br><br>
+
+        <label for="portaria">Portaria:</label><br>
+        <input type="text" id="portaria" th:field="*{portaria}" /><br><br>
+
+        <label for="curso">Curso:</label><br>
+        <input type="text" id="curso" th:field="*{curso}" /><br><br>
+
+        <label for="dataInicio">Data Início:</label><br>
+        <input type="date" id="dataInicio" th:field="*{dataInicio}" /><br><br>
+
+        <label for="dataFim">Data Fim:</label><br>
+        <input type="date" id="dataFim" th:field="*{dataFim}" /><br><br>
+
+        <label>Membros:</label><br>
+        <select th:field="*{membros}" multiple size="5">
+            <option th:each="prof : ${professores}" th:value="${prof.id}" th:text="${prof.nome}"></option>
+        </select>
+        <br><br>
+
+        <button type="submit">Salvar</button>
+        <a th:href="@{/colegiados}">Cancelar</a>
+    </form>
+</body>
+</html>
