@@ -41,4 +41,10 @@ public class AlunoController {
         model.setViewName("alunos/form");
         return model;
     }
+    @GetMapping("/delete/{id}")
+    public String deleteAluno(@PathVariable("id") Long id) {
+        alunoService.deleteById(id);
+        return "redirect:/alunos";
+}
+
 }
