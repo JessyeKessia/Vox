@@ -21,6 +21,7 @@
                 <th>Nome</th>
                 <th>Login</th>
                 <th>Matrícula</th>
+                <th>Fone</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -30,8 +31,13 @@
                 <td th:text="${a.nome}">-</td>
                 <td th:text="${a.login}">-</td>
                 <td th:text="${a.matricula}">-</td>
+                <td th:text="${a.fone}">-</td>
                 <td>
-                    <a th:href="@{/alunos/{id}(id=${a.id})}">Editar</a>
+                    <a th:href="@{/alunos/{id}(id=${a.id})}">Editar</a> |
+                    <a th:href="@{/alunos/delete/{id}(id=${a.id})}"
+                       onclick="return confirm('Tem certeza que deseja excluir este aluno?');">
+                        Excluir
+                    </a>
                 </td>
             </tr>
         </tbody>

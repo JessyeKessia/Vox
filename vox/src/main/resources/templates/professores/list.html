@@ -33,7 +33,11 @@
                 <td th:text="${p.matricula}">-</td>
                 <td th:text="${p.coordenador ? 'Sim' : 'Não'}">-</td>
                 <td>
-                    <a th:href="@{/professores/{id}(id=${p.id})}">Editar</a>
+                    <a th:href="@{/professores/{id}(id=${p.id})}">Editar</a> |
+                    <a th:href="@{/professores/delete/{id}(id=${p.id})}"
+                       onclick="return confirm('Tem certeza que deseja excluir este professor?');">
+                        Excluir
+                    </a>
                 </td>
             </tr>
         </tbody>

@@ -4,6 +4,5 @@ package br.edu.ifpb.pweb2.vox.model;
 public enum UserRole {
     ROLE_ALUNO,
     ROLE_PROFESSOR,
-    ROLE_COORDENADOR,
     ROLE_ADMIN
 }

@@ -6,7 +6,7 @@
 </head>
 <body>
 
-    <h1>Cadastrar Aluno</h1>
+    <h1 th:text="${aluno.id} != null ? 'Editar Aluno' : 'Cadastrar Aluno'">Cadastrar Aluno</h1>
 
     <p th:if="${mensagem}" th:text="${mensagem}" style="color:green;"></p>
 

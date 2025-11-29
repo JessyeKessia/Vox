@@ -41,4 +41,10 @@ public class ProfessorController {
         model.setViewName("professores/form");
         return model;
     }
+    @GetMapping("/delete/{id}")
+    public String deleteProfessor(@PathVariable("id") Long id) {
+        professorService.deleteById(id);
+        return "redirect:/professores";
+}
+
 }
