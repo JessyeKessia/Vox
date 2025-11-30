@@ -1,4 +1,4 @@
-package br.edu.ifpb.pweb2.vox.model;
+package br.edu.ifpb.pweb2.vox.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,6 +6,7 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -31,7 +32,12 @@ public class Processo implements Serializable {
     private String numero;
     
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate dataRecepcao = LocalDate.now();
+    private LocalDate dataRecepcao = LocalDate.ofEpochDay(
+        ThreadLocalRandom.current().nextLong(
+                LocalDate.of(2025, 1, 1).toEpochDay(),
+                LocalDate.of(2025, 12, 31).toEpochDay()
+        )
+    );
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataDistribuicao;

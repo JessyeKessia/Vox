@@ -1,4 +1,4 @@
-package br.edu.ifpb.pweb2.vox.model;
+package br.edu.ifpb.pweb2.vox.entity;
 
 import br.edu.ifpb.pweb2.vox.types.TipoVoto;
 // import jakarta.persistence.*;
