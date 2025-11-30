@@ -1,7 +1,8 @@
 package br.edu.ifpb.pweb2.vox.repository;
 
-import br.edu.ifpb.pweb2.vox.model.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.edu.ifpb.pweb2.vox.entity.Professor;
 
 public interface ProfessorRepository extends JpaRepository<Professor, Long> {
     boolean existsByLogin(String login);

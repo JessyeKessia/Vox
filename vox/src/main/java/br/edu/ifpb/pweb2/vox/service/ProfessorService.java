@@ -1,6 +1,6 @@
 package br.edu.ifpb.pweb2.vox.service;
 
-import br.edu.ifpb.pweb2.vox.model.Professor;
+import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

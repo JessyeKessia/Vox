@@ -1,6 +1,6 @@
 package br.edu.ifpb.pweb2.vox.service;
 
-import br.edu.ifpb.pweb2.vox.model.Aluno;
+import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
