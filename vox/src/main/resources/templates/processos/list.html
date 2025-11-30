@@ -13,12 +13,45 @@
     <h1>Processos</h1>
 
     <p><a th:href="@{/processos/form}">Novo processo</a></p>
- <table>
+    
+    <form th:action="@{/processos}" method="get">
+
+        <!-- Filtro de Assunto -->
+        <label>Assunto:</label>
+        <select name="assunto">
+            <option value="">-- Todos --</option>
+            <option th:each="a : ${assuntosItens}"
+                th:value="${a.nome}"
+                th:text="${a.nome}"
+                th:selected="${a.nome == assuntoSelecionado}">
+            </option>
+        </select>
+
+        <!-- Filtro de Status -->
+        <label>Status:</label>
+        <select name="status">
+            <option value="">-- Todos --</option>
+                <option th:each="s : ${statusItens}"
+                    th:value="${s.name()}"
+                    th:text="${s.name()}"
+                    th:selected="${s == statusSelecionado}">
+                </option>
+        </select>
+
+        <button type="submit">Filtrar</button>
+
+         <button type="submit" name="ordenar" value="dataDesc">
+        Ordenar por mais recentes ↓
+        </button>
+    </form>
+
+    <table>
         <thead>
             <tr>
                 <th>Número</th>
                 <th>Data de recepção</th>
                 <th>Status</th>
+                <th>Descrição</th>
                 <th>Assunto</th>
             </tr>
         </thead>
@@ -27,6 +60,7 @@
                 <td th:text="${p.numero}">--</td>
                 <td th:text="${#temporals.format(p.dataRecepcao, 'dd/MM/yyyy')}">--/--/----</td>
                 <td th:text="${p.status}">--</td>
+                <td th:text="${p.descricao}">--</td>
                 <td th:text="${p.assunto.nome}">--</td>
             </tr>
         </tbody>
