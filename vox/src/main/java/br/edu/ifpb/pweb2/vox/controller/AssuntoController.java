@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import br.edu.ifpb.pweb2.vox.model.Assunto;
+import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
 
 @Controller
@@ -39,7 +39,7 @@ public class AssuntoController {
 
     // Lista todos os assuntos
     @GetMapping
-    public ModelAndView list(ModelAndView model) {
+    public ModelAndView listAll(ModelAndView model) {
         model.addObject("assuntos", assuntoService.findAll());
         model.setViewName("assuntos/list"); // view: src/main/resources/templates/assuntos/list.html
         return model; 
@@ -47,14 +47,14 @@ public class AssuntoController {
 
     // Editar assunto existente
     @GetMapping("/{id}")
-    public ModelAndView edit(@PathVariable("id") Integer id, ModelAndView model) {
+    public ModelAndView editAssunto(@PathVariable("id") Integer id, ModelAndView model) {
         model.addObject("assunto", assuntoService.findById(id));
         model.setViewName("assuntos/form");
         return model;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, ModelAndView model) {
+    public ModelAndView deleteAssunto(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, ModelAndView model) {
         assuntoService.deleteById(id);
         redirectAttributes.addFlashAttribute("mensagem", "Assunto removido com sucesso!");
         model.setViewName("redirect:/assuntos");

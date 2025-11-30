@@ -1,7 +1,6 @@
 package br.edu.ifpb.pweb2.vox.controller;
 
-import br.edu.ifpb.pweb2.vox.model.Colegiado;
-import br.edu.ifpb.pweb2.vox.model.Professor;
+import br.edu.ifpb.pweb2.vox.entity.Colegiado;
 import br.edu.ifpb.pweb2.vox.service.ColegiadoService;
 import br.edu.ifpb.pweb2.vox.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
