@@ -17,19 +17,17 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nome</th>
-                <th>Login</th>
+                <th>E-mail</th>
                 <th>Matrícula</th>
-                <th>Coordenador?</th>
+                <th>Coordenador</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="p : ${professores}">
-                <td th:text="${p.id}">-</td>
                 <td th:text="${p.nome}">-</td>
-                <td th:text="${p.login}">-</td>
+                <td th:text="${p.email}">-</td>
                 <td th:text="${p.matricula}">-</td>
                 <td th:text="${p.coordenador ? 'Sim' : 'Não'}">-</td>
                 <td>

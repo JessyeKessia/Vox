@@ -16,7 +16,6 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Descrição</th>
                 <th>Portaria</th>
                 <th>Curso</th>
@@ -27,7 +26,6 @@
         </thead>
         <tbody>
             <tr th:each="c : ${colegiados}">
-                <td th:text="${c.id}"></td>
                 <td th:text="${c.descricao}"></td>
                 <td th:text="${c.portaria}"></td>
                 <td th:text="${c.curso}"></td>

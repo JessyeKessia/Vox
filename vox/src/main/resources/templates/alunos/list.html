@@ -17,19 +17,17 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nome</th>
-                <th>Login</th>
+                <th>Email</th>
                 <th>Matrícula</th>
-                <th>Fone</th>
+                <th>Telefone</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="a : ${alunos}">
-                <td th:text="${a.id}">-</td>
                 <td th:text="${a.nome}">-</td>
-                <td th:text="${a.login}">-</td>
+                <td th:text="${a.email}">-</td>
                 <td th:text="${a.matricula}">-</td>
                 <td th:text="${a.fone}">-</td>
                 <td>
