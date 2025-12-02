@@ -3,11 +3,11 @@ package br.edu.ifpb.pweb2.vox.service;
 import br.edu.ifpb.pweb2.vox.entity.Colegiado;
 import br.edu.ifpb.pweb2.vox.repository.ColegiadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import java.util.List;
 
-@Service
-public class ColegiadoService implements br.edu.ifpb.pweb2.vox.service.Service<Colegiado, Long> {
+@Component
+public class ColegiadoService implements Service<Colegiado, Long> {
     @Autowired
     private ColegiadoRepository colegiadoRepository;
 

@@ -9,7 +9,7 @@ import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.repository.AssuntoRepository;
 
 @Component
-public class AssuntoService implements Service<Assunto, Integer> {
+public class AssuntoService implements Service<Assunto, Long> {
     
     @Autowired
     AssuntoRepository assuntoRepository;
@@ -20,7 +20,7 @@ public class AssuntoService implements Service<Assunto, Integer> {
     }
 
     @Override
-    public Assunto findById(Integer id) {
+    public Assunto findById(Long id) {
         return assuntoRepository.findById(id).orElse(null);
     }
 
@@ -29,7 +29,8 @@ public class AssuntoService implements Service<Assunto, Integer> {
         return assuntoRepository.save(assunto);
     }
 
-    public void deleteById(Integer id) {
+    @Override
+    public void deleteById(Long id) {
         if (assuntoRepository.findById(id) != null) {
             assuntoRepository.deleteById(id);
         } else {

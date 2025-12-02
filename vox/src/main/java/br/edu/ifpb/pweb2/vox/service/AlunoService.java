@@ -3,11 +3,11 @@ package br.edu.ifpb.pweb2.vox.service;
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import java.util.List;
 
-@Service
-public class AlunoService implements br.edu.ifpb.pweb2.vox.service.Service<Aluno, Long> {
+@Component
+public class AlunoService implements Service<Aluno, Long> {
     @Autowired
     private AlunoRepository alunoRepository;
 
@@ -23,8 +23,10 @@ public class AlunoService implements br.edu.ifpb.pweb2.vox.service.Service<Aluno
 
     @Override
     public Aluno save(Aluno aluno) {
-        if (alunoRepository.existsByLogin(aluno.getLogin()) || alunoRepository.existsByMatricula(aluno.getMatricula())) {
-            throw new RuntimeException("Login ou matrícula já utilizados");
+        if (aluno.getId() == null) {
+            if (alunoRepository.existsByEmail(aluno.getEmail()) || alunoRepository.existsByMatricula(aluno.getMatricula()) ) {
+            throw new RuntimeException("Email já utilizados");
+        }
         }
         return alunoRepository.save(aluno);
     }

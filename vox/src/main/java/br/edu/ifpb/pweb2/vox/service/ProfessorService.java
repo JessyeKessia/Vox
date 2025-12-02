@@ -3,11 +3,12 @@ package br.edu.ifpb.pweb2.vox.service;
 import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.repository.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
-@Service
-public class ProfessorService implements br.edu.ifpb.pweb2.vox.service.Service<Professor, Long> {
+@Component
+public class ProfessorService implements Service<Professor, Long> {
     @Autowired
     private ProfessorRepository professorRepository;
 
@@ -23,8 +24,8 @@ public class ProfessorService implements br.edu.ifpb.pweb2.vox.service.Service<P
 
     @Override
     public Professor save(Professor professor) {
-        if (professorRepository.existsByLogin(professor.getLogin()) || professorRepository.existsByMatricula(professor.getMatricula())) {
-            throw new RuntimeException("Login ou matrícula já utilizados");
+        if (professorRepository.existsByEmail(professor.getEmail()) || professorRepository.existsByMatricula(professor.getMatricula())) {
+            throw new RuntimeException("Email ou matrícula já utilizados");
         }
         return professorRepository.save(professor);
     }
@@ -36,6 +37,11 @@ public class ProfessorService implements br.edu.ifpb.pweb2.vox.service.Service<P
         } else {
             throw new RuntimeException("Professor com ID " + id + " não encontrado.");
         }
+    }
+
+    // pega a lista dos coordenadores
+    public List<Professor> findByCoordenadorFalse() {
+        return professorRepository.findByCoordenadorFalse();
     }
 }
 
