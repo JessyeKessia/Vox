@@ -1,15 +1,20 @@
 package br.edu.ifpb.pweb2.vox.controller;
 
 import br.edu.ifpb.pweb2.vox.entity.Professor;
+import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.service.ProfessorService;
+import br.edu.ifpb.pweb2.vox.util.PasswordUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+
 @Controller
 @RequestMapping("/professores")
 public class ProfessorController {
+
     @Autowired
     private ProfessorService professorService;
 
@@ -22,9 +27,23 @@ public class ProfessorController {
 
     @PostMapping
     public ModelAndView addProfessor(Professor professor, ModelAndView modelAndView) {
+        
+        // define a role padrão do professor
+        if (professor.getRole() == null) {
+           if (professor.isCoordenador()) {
+               professor.setRole(Role.COORDENADOR);
+           } else {
+               professor.setRole(Role.PROFESSOR);
+           }
+        }
+
+        // só hashear se a senha foi fornecida
+        if (professor.getSenha() != null && !professor.getSenha().isBlank()) {
+            professor.setSenha(PasswordUtil.hashPassword(professor.getSenha()));
+        }
+
         professorService.save(professor);
-        modelAndView.setViewName("professores/list");
-        modelAndView.addObject("professores", professorService.findAll());
+        modelAndView.setViewName("redirect:/professores");
         return modelAndView;
     }
 

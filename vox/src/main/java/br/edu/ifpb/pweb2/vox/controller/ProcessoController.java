@@ -14,9 +14,13 @@ import java.util.List;
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.entity.Processo;
+import br.edu.ifpb.pweb2.vox.entity.Usuario;
+import br.edu.ifpb.pweb2.vox.entity.Aluno;
+import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
+import br.edu.ifpb.pweb2.vox.repository.AlunoRepository;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
-import br.edu.ifpb.pweb2.vox.types.StatusProcesso;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/processos")
@@ -27,6 +31,9 @@ public class ProcessoController {
 
     @Autowired
     private AssuntoService assuntoService;
+
+    @Autowired
+    private AlunoRepository alunoRepository;
 
     // atribuindo a lista de assuntos ao modelo para todas as requisições do controlador
     // terem na chamada a lista de asssuntos disponiveis para fazer o cadastro de processos
@@ -52,19 +59,30 @@ public class ProcessoController {
 
     // salva o processando quando você clica em salvar no formulário
     @PostMapping
-    public ModelAndView addProcesso(Processo processo, ModelAndView modelAndView) {
+    public ModelAndView addProcesso(Processo processo, ModelAndView modelAndView, HttpSession session) {
+        // pega o usuário logado da sessão
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        // procura se o aluno existe no repositorio
+        Aluno aluno = alunoRepository.findById(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
+
+        // associa o processo ao aluno interessado
+        processo.setAlunoInteressado(aluno);
+
         processoService.save(processo);
-        // redireciona para a lista de processos após salvar
+
         modelAndView.setViewName("redirect:/processos");
-        modelAndView.addObject("processos", processoService.findAll());
         return modelAndView;
     }
 
-    // ta vazio pq usa a rota "/processos"
+    // lista os processos com filtros
     @GetMapping()
     public ModelAndView list(
-        @RequestParam(required = false) String status, 
-        @RequestParam(required = false) String assunto) {
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String assunto,
+        @RequestParam(required = false, defaultValue = "false") boolean ordenarPorData) 
+        {
         
         // seta o caminho da view
         ModelAndView modelAndView = new ModelAndView("processos/list");
@@ -73,29 +91,31 @@ public class ProcessoController {
         modelAndView.addObject("statusSelecionado", status);
         modelAndView.addObject("assuntoSelecionado", assunto);
 
-        List<Processo> processos;
-
         // FILTROS
-        if (status != null && !status.isEmpty() &&
-        assunto != null && !assunto.isEmpty()) {
+        // devolve filtros para a view
+        modelAndView.addObject("statusSelecionado", status);
+        modelAndView.addObject("assuntoSelecionado", assunto);
+        modelAndView.addObject("ordenarPorData", ordenarPorData);
 
-        processos = processoService.findByAssunto(assunto).stream()
-                .filter(p -> p.getStatus() == StatusProcesso.valueOf(status))
-                .toList();
-
-        } else if (status != null && !status.isEmpty()) {
-
-            processos = processoService.findByStatus(
-                    StatusProcesso.valueOf(status)
-            );
-
-        } else if (assunto != null && !assunto.isEmpty()) {
-
-            processos = processoService.findByAssunto(assunto);
-
-        } else {
-            processos = processoService.findAllOrderedByCreationDate();
+        // converte o status recebido para Enum (se tiver)
+        StatusProcesso statusEnum = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                statusEnum = StatusProcesso.valueOf(status);
+            } catch (Exception e) {
+                statusEnum = null; // evita quebrar a aplicação
+            }
         }
+
+        // prepara assunto
+        String assuntoFiltro = (assunto != null && !assunto.isBlank()) ? assunto : null;
+
+        // chamada ao service
+        List<Processo> processos = processoService.findForAlunoProcessos(
+                statusEnum,
+                assuntoFiltro,
+                ordenarPorData
+        );
 
         modelAndView.addObject("processos", processos);
         return modelAndView;
@@ -103,7 +123,7 @@ public class ProcessoController {
     }
     
     @GetMapping("/{id}")
-    public ModelAndView getProcessoById(@PathVariable(value = "id") Integer id, ModelAndView model) {
+    public ModelAndView getProcessoById(@PathVariable(value = "id") Long id, ModelAndView model) {
         model.addObject("processo", processoService.findById(id));
         model.setViewName("processos/form");
         return model;

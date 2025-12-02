@@ -47,14 +47,14 @@ public class AssuntoController {
 
     // Editar assunto existente
     @GetMapping("/{id}")
-    public ModelAndView editAssunto(@PathVariable("id") Integer id, ModelAndView model) {
+    public ModelAndView editAssunto(@PathVariable("id") Long id, ModelAndView model) {
         model.addObject("assunto", assuntoService.findById(id));
         model.setViewName("assuntos/form");
         return model;
     }
 
     @GetMapping("/delete/{id}")
-    public ModelAndView deleteAssunto(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes, ModelAndView model) {
+    public ModelAndView deleteAssunto(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, ModelAndView model) {
         assuntoService.deleteById(id);
         redirectAttributes.addFlashAttribute("mensagem", "Assunto removido com sucesso!");
         model.setViewName("redirect:/assuntos");
