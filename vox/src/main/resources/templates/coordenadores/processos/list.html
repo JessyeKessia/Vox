@@ -1,0 +1,50 @@
+
+    <h2>Processos</h2>
+
+    <form method="get" action="/coordenador/processos">
+        <label>Status:</label>
+        <select name="status">
+            <option value="">-- Todos --</option>
+                <option th:each="s : ${statusItens}"
+                    th:value="${s.name()}"
+                    th:text="${s.name()}"
+                    th:selected="${s == statusSelecionado}">
+                </option>
+        </select>
+
+        <label>Aluno:</label>
+        <select name="alunoId">
+            <option value="">-- Todos --</option>
+            <th:block th:each="aluno : ${alunosItens}">
+                <option th:value="${aluno.id}" th:text="${aluno.nome}"></option>
+            </th:block>
+        </select>
+
+        <label>Relator:</label>
+        <select name="relatorId">
+            <option value="">-- Todos --</option>
+            <th:block th:each="prof : ${professoresItens}">
+                <option th:value="${prof.id}" th:text="${prof.nome}"></option>
+            </th:block>
+        </select>
+
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>Aluno interessado</th>
+            <th>Status</th>
+            <th>Professor Relator</th>
+            <th>Ações</th>
+        </tr>
+
+        <tr th:each="p : ${processos}">
+            <td th:text="${p.aluno.nome}"></td>
+            <td th:text="${p.status}"></td>
+            <td th:text="${p.relator != null ? p.relator.nome : '—'}"></td>
+            <td>
+                <a th:href="@{'/coordenadores/processos/distribuir/' + ${p.id}}">Distribuir</a>
+            </td>
+        </tr>
+    </table>

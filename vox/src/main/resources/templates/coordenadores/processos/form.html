@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Distribuir Processo</title>
+</head>
+<body>
+    <h2>Distribuir Processo</h2>
+
+    <p>Processo ID: <span th:text="${processo.id}"></span></p>
+
+    <form th:action="@{'/coordenador/processos/distribuir/' + ${processo.id}}" method="post">
+        <label>Escolha o relator:</label>
+        <select name="professorId">
+            <th:block th:each="prof : ${professores}">
+                <option th:value="${prof.id}" th:text="${prof.nome}"></option>
+            </th:block>
+        </select>
+
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>
