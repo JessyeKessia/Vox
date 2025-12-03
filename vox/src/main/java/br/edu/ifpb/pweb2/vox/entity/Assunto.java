@@ -22,6 +22,6 @@ public class Assunto implements Serializable {
     private String nome;
 
     @OneToMany(mappedBy = "assunto")
-     private Set<Processo> processos = new HashSet<Processo>();
+    private Set<Processo> processos = new HashSet<Processo>();
 }
 

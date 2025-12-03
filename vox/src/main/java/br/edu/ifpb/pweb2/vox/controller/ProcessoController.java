@@ -20,9 +20,14 @@ import java.util.List;
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.entity.Processo;
+import br.edu.ifpb.pweb2.vox.entity.Professor;
+import br.edu.ifpb.pweb2.vox.entity.Usuario;
+import br.edu.ifpb.pweb2.vox.entity.Aluno;
+import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
+import br.edu.ifpb.pweb2.vox.repository.AlunoRepository;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
-import br.edu.ifpb.pweb2.vox.types.StatusProcesso;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/processos")
@@ -34,10 +39,18 @@ public class ProcessoController {
     @Autowired
     private AssuntoService assuntoService;
 
+<<<<<<< HEAD
     // atribuindo a lista de assuntos ao modelo para todas as requisições do
     // controlador
     // terem na chamada a lista de asssuntos disponiveis para fazer o cadastro de
     // processos
+=======
+    @Autowired
+    private AlunoRepository alunoRepository;
+
+    // atribuindo a lista de assuntos ao modelo para todas as requisições do controlador
+    // terem na chamada a lista de asssuntos disponiveis para fazer o cadastro de processos
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
     @ModelAttribute("assuntosItens")
     public List<Assunto> getAssuntos() {
         return assuntoService.findAll();
@@ -60,23 +73,47 @@ public class ProcessoController {
 
     // salva o processando quando você clica em salvar no formulário
     @PostMapping
+<<<<<<< HEAD
     public ModelAndView addProcesso(Processo processo, RedirectAttributes redirectAttributes,
             ModelAndView modelAndView) {
         processoService.save(processo);
         redirectAttributes.addFlashAttribute("mensagemSucesso", "Processo cadastrado com sucesso!");
         // PRG: redireciona para a lista de processos após salvar
+=======
+    public ModelAndView addProcesso(Processo processo, ModelAndView modelAndView, HttpSession session) {
+        // pega o usuário logado da sessão
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        // procura se o aluno existe no repositorio
+        Aluno aluno = alunoRepository.findById(usuario.getId())
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado."));
+
+        // associa o processo ao aluno interessado
+        processo.setAlunoInteressado(aluno);
+
+        processoService.save(processo);
+
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
         modelAndView.setViewName("redirect:/processos");
         return modelAndView;
     }
 
-    // ta vazio pq usa a rota "/processos"
+    // lista os processos com filtros
     @GetMapping()
     public ModelAndView list(
+<<<<<<< HEAD
             // MUDANÇA: Adiciona Pageable com ordenação default (REQNAOFUNC 9)
             @PageableDefault(size = 10, sort = { "dataRecepcao" }, direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String assunto) {
 
+=======
+        @RequestParam(required = false) String status,
+        @RequestParam(required = false) String assunto,
+        @RequestParam(required = false, defaultValue = "false") boolean ordenarPorData) 
+        {
+        
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
         // seta o caminho da view
         ModelAndView modelAndView = new ModelAndView("processos/list");
 
@@ -84,6 +121,7 @@ public class ProcessoController {
         modelAndView.addObject("statusSelecionado", status);
         modelAndView.addObject("assuntoSelecionado", assunto);
 
+<<<<<<< HEAD
         Page<Processo> processosPaginados; // MUDANÇA: Objeto paginado
 
         // FILTROS (adaptados para usar métodos paginados)
@@ -111,12 +149,59 @@ public class ProcessoController {
         // MUDANÇA: Adiciona o objeto Page (com metadados de paginação) à view
         modelAndView.addObject("processosPaginados", processosPaginados);
 
+=======
+        // FILTROS
+        // devolve filtros para a view
+        modelAndView.addObject("statusSelecionado", status);
+        modelAndView.addObject("assuntoSelecionado", assunto);
+        modelAndView.addObject("ordenarPorData", ordenarPorData);
+
+        // converte o status recebido para Enum (se tiver)
+        StatusProcesso statusEnum = null;
+        if (status != null && !status.isBlank()) {
+            try {
+                statusEnum = StatusProcesso.valueOf(status);
+            } catch (Exception e) {
+                statusEnum = null; // evita quebrar a aplicação
+            }
+        }
+
+        // prepara assunto
+        String assuntoFiltro = (assunto != null && !assunto.isBlank()) ? assunto : null;
+
+        // chamada ao service
+        List<Processo> processos = processoService.findForAlunoProcessos(
+                statusEnum,
+                assuntoFiltro,
+                ordenarPorData
+        );
+
+        modelAndView.addObject("processos", processos);
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
         return modelAndView;
 
     }
+<<<<<<< HEAD
 
+=======
+    // lista os processos de designados a cada professor
+    @GetMapping("/professores")
+    public ModelAndView listarProcessos(HttpSession session) {
+        
+        // pega o professor logado da sessão
+        Professor professorLogado = (Professor) session.getAttribute("usuario"); 
+
+        List<Processo> processos = processoService.findByProfessor(professorLogado);
+
+        ModelAndView modelAndView = new ModelAndView("professores/processos/list");
+        modelAndView.addObject("processos", processos);
+
+        return modelAndView;
+    }
+    
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
     @GetMapping("/{id}")
-    public ModelAndView getProcessoById(@PathVariable(value = "id") Integer id, ModelAndView model) {
+    public ModelAndView getProcessoById(@PathVariable(value = "id") Long id, ModelAndView model) {
         model.addObject("processo", processoService.findById(id));
         model.setViewName("processos/form");
         return model;

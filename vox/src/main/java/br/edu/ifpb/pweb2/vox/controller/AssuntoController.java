@@ -53,7 +53,7 @@ public class AssuntoController {
 
     // Editar assunto existente
     @GetMapping("/{id}")
-    public ModelAndView editAssunto(@PathVariable("id") Integer id, ModelAndView model) {
+    public ModelAndView editAssunto(@PathVariable("id") Long id, ModelAndView model) {
         model.addObject("assunto", assuntoService.findById(id));
         model.setViewName("assuntos/form");
         return model;

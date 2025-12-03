@@ -162,6 +162,7 @@
             </div>
           </div>
 
+<<<<<<< HEAD
           <!-- Paginação -->
           <div
             class="card-footer bg-white border-0"
@@ -216,3 +217,27 @@
     </section>
   </body>
 </html>
+=======
+    <table>
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Data de criação</th>
+                <th>Status</th>
+                <th>Descrição</th>
+                <th>Assunto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${processos}">
+                <td th:text="${p.numero}">--</td>
+                <td th:text="${#temporals.format(p.dataCriacao, 'dd/MM/yyyy')}">--/--/----</td>
+                <td th:text="${p.status}">--</td>
+                <td th:text="${p.descricao}">--</td>
+                <td th:text="${p.assunto.nome}">--</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082

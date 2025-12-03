@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
-    boolean existsByLogin(String login);
+
+    Aluno findByEmail(String email);
+
+    boolean existsByEmail(String email);
+    
     boolean existsByMatricula(String matricula);
 }

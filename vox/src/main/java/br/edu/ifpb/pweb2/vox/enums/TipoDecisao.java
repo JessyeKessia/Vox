@@ -1,4 +1,4 @@
-package br.edu.ifpb.pweb2.vox.types;
+package br.edu.ifpb.pweb2.vox.enums;
 
 public enum TipoDecisao {
     DEFERIMENTO,

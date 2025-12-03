@@ -6,12 +6,11 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import br.edu.ifpb.pweb2.vox.types.StatusProcesso;
-import br.edu.ifpb.pweb2.vox.types.TipoDecisao;
+import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
+import br.edu.ifpb.pweb2.vox.enums.TipoDecisao;
 
 
 @Entity
@@ -30,14 +29,14 @@ public class Processo implements Serializable {
     private Assunto assunto;
 
     private String numero;
+
+    @ManyToOne
+    // não pode iniciar vazio aqui!!!!! TEM QUE TER O NOME DO AUTOR DO PROCESSO!!
+    @JoinColumn(name = "aluno_interessado_id", nullable = false)
+    private Aluno alunoInteressado; // aluno autor do processo
     
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate dataRecepcao = LocalDate.ofEpochDay(
-        ThreadLocalRandom.current().nextLong(
-                LocalDate.of(2025, 1, 1).toEpochDay(),
-                LocalDate.of(2025, 12, 31).toEpochDay()
-        )
-    );
+    private LocalDate dataCriacao = LocalDate.now();
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataDistribuicao;
@@ -45,6 +44,7 @@ public class Processo implements Serializable {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataParecer;
 
+    // descrição simples do processo
     private String descricao;
 
     @Enumerated(EnumType.STRING)
@@ -55,6 +55,10 @@ public class Processo implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private TipoDecisao decisaoRelator;
+
+    @ManyToOne
+    @JoinColumn(name = "professor_relator_id")
+    private Professor relator; // professor designado como relator
 
     @PrePersist
     public void gerarNumero() {

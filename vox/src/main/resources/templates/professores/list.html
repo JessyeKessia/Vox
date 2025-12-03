@@ -32,6 +32,7 @@
           </div>
         </div>
 
+<<<<<<< HEAD
         <!-- Tabela em card -->
         <div class="card border-0 shadow-sm">
           <div class="card-body p-0">
@@ -76,6 +77,28 @@
                         onclick="return confirm('Tem certeza que deseja excluir este professor?');"
                       >
                         <i class="bi bi-trash me-1"></i>
+=======
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Matrícula</th>
+                <th>Coordenador</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="p : ${professores}">
+                <td th:text="${p.nome}">-</td>
+                <td th:text="${p.email}">-</td>
+                <td th:text="${p.matricula}">-</td>
+                <td th:text="${p.coordenador ? 'Sim' : 'Não'}">-</td>
+                <td>
+                    <a th:href="@{/professores/{id}(id=${p.id})}">Editar</a> |
+                    <a th:href="@{/professores/delete/{id}(id=${p.id})}"
+                       onclick="return confirm('Tem certeza que deseja excluir este professor?');">
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
                         Excluir
                       </a>
                     </td>

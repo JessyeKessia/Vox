@@ -10,6 +10,7 @@
         <div th:replace="~{fragments/menu :: message-success}"></div>
         <div th:replace="~{fragments/menu :: message-error}"></div>
 
+<<<<<<< HEAD
         <!-- Header -->
         <div
           class="d-flex flex-wrap align-items-center justify-content-between mb-3"
@@ -145,4 +146,34 @@
       </div>
     </section>
   </body>
+=======
+    <table>
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Portaria</th>
+                <th>Curso</th>
+                <th>Data início</th>
+                <th>Membros</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${colegiados}">
+                <td th:text="${c.descricao}"></td>
+                <td th:text="${c.portaria}"></td>
+                <td th:text="${c.curso}"></td>
+                <td th:text="${#temporals.format(c.dataInicio, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <span th:each="m : ${c.membros}" th:text="${m.nome + ' '}" />
+                </td>
+                <td>
+                    <a th:href="@{'/colegiados/' + ${c.id}}">Editar</a>
+                    <a th:href="@{'/colegiados/delete/' + ${c.id}}" onclick="return confirm('Tem certeza?')">Remover</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+>>>>>>> e08501738ef912fd79693544bc9c5321da2e4082
 </html>

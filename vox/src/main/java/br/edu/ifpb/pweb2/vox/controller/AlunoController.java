@@ -2,6 +2,10 @@ package br.edu.ifpb.pweb2.vox.controller;
 
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.service.AlunoService;
+import br.edu.ifpb.pweb2.vox.util.PasswordUtil;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -9,14 +13,21 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/alunos")
 public class AlunoController {
+
     @Autowired
     private AlunoService alunoService;
 
+    // roda antes de qualquer handler e já entrega o aluno
+    @ModelAttribute("alunos")
+    public List<Aluno> getAlunos() {
+        return alunoService.findAll();
+    }
+
+    // pega o formulário de cadastro de aluno assim que voce acessa a rota
     @GetMapping("/form")
     public ModelAndView getForm(Aluno aluno, ModelAndView model) {
         model.setViewName("alunos/form");
@@ -24,24 +35,12 @@ public class AlunoController {
         return model;
     }
 
+    // salva o aluno quando você clica em salvar no formulário
     @PostMapping
-    public ModelAndView addAluno(Aluno aluno, RedirectAttributes redirectAttributes, ModelAndView modelAndView) {
-        try {
-            alunoService.save(aluno);
-            redirectAttributes.addFlashAttribute("mensagemSucesso", "Aluno cadastrado com sucesso!");
-            // PRG: Redireciona para a lista após sucesso
-            modelAndView.setViewName("redirect:/alunos");
-        } catch (RuntimeException e) {
-            // Trata erro de negócio (REQNAOFUNC 5)
-            redirectAttributes.addFlashAttribute("mensagemErro", e.getMessage());
-            // Redireciona para o formulário, mantendo o objeto (para edição ou novo
-            // cadastro)
-            if (aluno.getId() != null) {
-                modelAndView.setViewName("redirect:/alunos/" + aluno.getId());
-            } else {
-                modelAndView.setViewName("redirect:/alunos/form");
-            }
-        }
+    public ModelAndView addAluno(Aluno aluno, ModelAndView modelAndView) {
+        alunoService.save(aluno);
+        modelAndView.setViewName("alunos/list");
+        modelAndView.addObject("alunos", alunoService.findAll());
         return modelAndView;
     }
 
@@ -61,7 +60,6 @@ public class AlunoController {
         model.setViewName("alunos/form");
         return model;
     }
-
     @GetMapping("/delete/{id}")
     public String deleteAluno(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
         try {
