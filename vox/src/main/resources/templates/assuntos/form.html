@@ -1,26 +1,56 @@
 <!DOCTYPE html>
-<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastrar Assunto</title>
-</head>
-<body>
+<html
+  lang="pt_BR"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title='Cadastrar Assunto')}"
+>
+  <body>
+    <section class="py-4">
+      <div class=" container-fluid">
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1 class="text-white h4 mb-1">Cadastrar Assunto</h1>
+              <p class="text-white small mb-0">
+                Informe o nome do assunto que será utilizado para classificar os
+                processos.
+              </p>
+            </div>
 
-    <h1>Cadastrar Assunto</h1>
+            <form
+              th:action="@{/assuntos}"
+              th:object="${assunto}"
+              method="post"
+              class="row g-3"
+            >
+              <input type="hidden" th:field="*{id}" />
 
-    <p th:if="${mensagem}" th:text="${mensagem}" style="color:green;"></p>
+              <div class="col-md-6">
+                <label
+                  for="nome"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Nome do assunto
+                </label>
+                <input
+                  type="text"
+                  id="nome"
+                  th:field="*{nome}"
+                  required
+                  class="form-control"
+                />
+              </div>
 
-    <form th:action="@{/assuntos}" th:object="${assunto}" method="post">
-        <input type="hidden" th:field="*{id}" />
-
-        <label for="nome">Nome do Assunto:</label><br>
-        <input type="text" id="nome" th:field="*{nome}" required /><br><br>
-
-        <button type="submit">Salvar</button>
-    </form>
-
-    <br>
-    <a th:href="@{/assuntos}">Voltar à lista</a>
-
-</body>
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/assuntos}" class="btn btn-light border">
+                  Voltar à lista
+                </a>
+                <button type="submit" class="btn btn-success">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

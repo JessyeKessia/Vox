@@ -1,46 +1,146 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Professores</title>
-    <style>
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background: #f5f5f5; }
-    </style>
-</head>
-<body>
-    <h1>Professores</h1>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title='Lista de Professores')}"
+>
+  <body>
+    <section class="py-4">
+      <div class="container-fluid">
+        <!-- Mensagens -->
+        <div th:replace="~{fragments/menu :: message-success}"></div>
+        <div th:replace="~{fragments/menu :: message-error}"></div>
 
-    <p><a th:href="@{/professores/form}">Novo professor</a></p>
+        <!-- Header -->
+        <div
+          class="d-flex flex-wrap align-items-center justify-content-between mb-3"
+        >
+          <div>
+            <h1 class="h3 mb-1">Professores</h1>
+            <p class="text-muted small mb-0">
+              Gerencie os professores cadastrados e identifique quem é
+              coordenador.
+            </p>
+          </div>
+          <div class="mt-3 mt-sm-0">
+            <a
+              th:href="@{/professores/form}"
+              class="btn btn-primary d-flex align-items-center"
+            >
+              <i class="bi bi-plus-circle me-2"></i>
+              Novo professor
+            </a>
+          </div>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Login</th>
-                <th>Matrícula</th>
-                <th>Coordenador?</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="p : ${professores}">
-                <td th:text="${p.id}">-</td>
-                <td th:text="${p.nome}">-</td>
-                <td th:text="${p.login}">-</td>
-                <td th:text="${p.matricula}">-</td>
-                <td th:text="${p.coordenador ? 'Sim' : 'Não'}">-</td>
-                <td>
-                    <a th:href="@{/professores/{id}(id=${p.id})}">Editar</a> |
-                    <a th:href="@{/professores/delete/{id}(id=${p.id})}"
-                       onclick="return confirm('Tem certeza que deseja excluir este professor?');">
+        <!-- Tabela em card -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-nowrap">ID</th>
+                    <th class="text-nowrap">Nome</th>
+                    <th class="text-nowrap">Login</th>
+                    <th class="text-nowrap">Matrícula</th>
+                    <th class="text-nowrap">Coordenador?</th>
+                    <th class="text-nowrap text-end">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="p : ${professoresPaginados.content}">
+                    <td th:text="${p.id}">-</td>
+                    <td class="fw-semibold" th:text="${p.nome}">-</td>
+                    <td th:text="${p.login}">-</td>
+                    <td th:text="${p.matricula}">-</td>
+                    <td>
+                      <span
+                        class="badge rounded-pill"
+                        th:classappend="${p.coordenador} ? ' bg-success-subtle text-success' : ' bg-secondary-subtle text-secondary'"
+                        th:text="${p.coordenador ? 'Sim' : 'Não'}"
+                      >
+                        -
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <a
+                        th:href="@{/professores/{id}(id=${p.id})}"
+                        class="btn btn-sm btn-outline-primary me-1"
+                      >
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Editar
+                      </a>
+                      <a
+                        th:href="@{/professores/delete/{id}(id=${p.id})}"
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Tem certeza que deseja excluir este professor?');"
+                      >
+                        <i class="bi bi-trash me-1"></i>
                         Excluir
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</body>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr th:if="${professoresPaginados.content.size() == 0}">
+                    <td colspan="6" class="text-center text-muted py-4">
+                      Nenhum professor encontrado.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Paginação -->
+          <div
+            class="card-footer bg-white border-0"
+            th:if="${professoresPaginados.totalPages > 1}"
+          >
+            <nav>
+              <ul class="pagination pagination-sm mb-0 justify-content-end">
+                <li
+                  class="page-item"
+                  th:classappend="${professoresPaginados.first} ? ' disabled' : ''"
+                >
+                  <a
+                    class="page-link"
+                    th:href="@{/professores(page=${professoresPaginados.number - 1}, size=${professoresPaginados.size})}"
+                    aria-label="Anterior"
+                  >
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+
+                <li
+                  class="page-item"
+                  th:each="i : ${#numbers.sequence(0, professoresPaginados.totalPages - 1)}"
+                  th:classappend="${i == professoresPaginados.number} ? ' active' : ''"
+                >
+                  <a
+                    class="page-link"
+                    th:href="@{/professores(page=${i}, size=${professoresPaginados.size})}"
+                    th:text="${i + 1}"
+                  >
+                    1
+                  </a>
+                </li>
+
+                <li
+                  class="page-item"
+                  th:classappend="${professoresPaginados.last} ? ' disabled' : ''"
+                >
+                  <a
+                    class="page-link"
+                    th:href="@{/professores(page=${professoresPaginados.number + 1}, size=${professoresPaginados.size})}"
+                    aria-label="Próximo"
+                  >
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>
