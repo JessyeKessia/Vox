@@ -14,6 +14,7 @@ import java.util.List;
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.entity.Processo;
+import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
@@ -120,6 +121,20 @@ public class ProcessoController {
         modelAndView.addObject("processos", processos);
         return modelAndView;
             
+    }
+    // lista os processos de designados a cada professor
+    @GetMapping("/professores")
+    public ModelAndView listarProcessos(HttpSession session) {
+        
+        // pega o professor logado da sessão
+        Professor professorLogado = (Professor) session.getAttribute("usuario"); 
+
+        List<Processo> processos = processoService.findByProfessor(professorLogado);
+
+        ModelAndView modelAndView = new ModelAndView("professores/processos/list");
+        modelAndView.addObject("processos", processos);
+
+        return modelAndView;
     }
     
     @GetMapping("/{id}")
