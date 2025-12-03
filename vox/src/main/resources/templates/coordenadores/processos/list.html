@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title='Lista de Processos (Coordenador)')}"
+>
+  <body>
+    <section>
+      <div th:replace="~{fragments/menu :: message-success}"></div>
+      <div th:replace="~{fragments/menu :: message-error}"></div>
+
+      <h2 class="mb-4">Processos</h2>
+
+      <form
+        method="get"
+        th:action="@{/coordenadores/processos}"
+        class="row g-3 mb-4 align-items-end"
+      >
+        <div class="col-md-3">
+          <label for="status" class="form-label">Status:</label>
+          <select id="status" name="status" class="form-select">
+            <option value="">-- Todos --</option>
+            <option
+              th:each="s : ${statusItens}"
+              th:value="${s.name()}"
+              th:text="${s.name()}"
+              th:selected="${s.name() == statusSelecionado}"
+            ></option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label for="alunoId" class="form-label">Aluno:</label>
+          <select id="alunoId" name="alunoId" class="form-select">
+            <option value="">-- Todos --</option>
+            <option
+              th:each="aluno : ${alunosItens}"
+              th:value="${aluno.id}"
+              th:text="${aluno.nome}"
+              th:selected="${aluno.id} == ${alunoSelecionado}"
+            ></option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label for="relatorId" class="form-label">Relator:</label>
+          <select id="relatorId" name="professorId" class="form-select">
+            <option value="">-- Todos --</option>
+            <option
+              th:each="prof : ${professoresItens}"
+              th:value="${prof.id}"
+              th:text="${prof.nome}"
+              th:selected="${prof.id} == ${professorSelecionado}"
+            ></option>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-secondary">Filtrar</button>
+        </div>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Aluno interessado</th>
+              <th>Status</th>
+              <th>Professor Relator</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="p : ${processos}">
+              <td th:text="${p.id}"></td>
+              <td th:text="${p.aluno.nome}"></td>
+              <td th:text="${p.status}"></td>
+              <td th:text="${p.relator != null ? p.relator.nome : '—'}"></td>
+              <td>
+                <span th:if="${p.status.name() != 'CRIADO'}">Distribuído</span>
+                <a
+                  th:if="${p.status.name() == 'CRIADO'}"
+                  th:href="@{'/coordenadores/processos/distribuir/' + ${p.id}}"
+                  class="btn btn-sm btn-info"
+                  >Distribuir</a
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+</html>

@@ -43,7 +43,7 @@ public class AuthController {
       return new ModelAndView("redirect:/home");
     }
     // senão n deixa entrar
-    redirectAttrs.addFlashAttribute("mensagem", "Email ou senha inválidos!");
+    redirectAttrs.addFlashAttribute("mensagemErro", "Email ou senha inválidos!");
     return new ModelAndView("redirect:/auth");
   }
 
