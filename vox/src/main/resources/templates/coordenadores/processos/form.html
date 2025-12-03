@@ -1,23 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Distribuir Processo</title>
-</head>
-<body>
-    <h2>Distribuir Processo</h2>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: base(content=~{::section}, title='Distribuir Processo')}">
+  <body>
+    <section class="py-4">
+      <div class="container-fluid">
+        <div th:replace="~{fragments/menu :: message-success}"></div>
+        <div th:replace="~{fragments/menu :: message-error}"></div>
 
-    <p>Processo ID: <span th:text="${processo.id}"></span></p>
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1 class="h4 mb-1 text-white">Distribuir Processo</h1>
+              <p class="text-white small mb-0">Atribua um relator ao processo selecionado.</p>
+            </div>
 
-    <form th:action="@{'/coordenador/processos/distribuir/' + ${processo.id}}" method="post">
-        <label>Escolha o relator:</label>
-        <select name="professorId">
-            <th:block th:each="prof : ${professores}">
-                <option th:value="${prof.id}" th:text="${prof.nome}"></option>
-            </th:block>
-        </select>
+            <div class="mb-3">
+              <p class="text-white mb-2">Processo ID: <span class="fw-semibold" th:text="${processo.id}">#</span></p>
+            </div>
 
-        <button type="submit">Salvar</button>
-    </form>
-</body>
+            <form th:action="@{/coordenadores/processos/distribuir/{id}(id=${processo.id})}" method="post" class="row g-3">
+              <div class="col-12">
+                <label for="professorId" class="form-label small text-uppercase text-white">Escolha o relator</label>
+                <select id="professorId" name="professorId" class="form-select" required>
+                  <option value="">Selecione...</option>
+                  <th:block th:each="prof : ${professoresItens}">
+                    <option th:value="${prof.id}" th:text="${prof.nome}" th:selected="${processo.relator != null and prof.id == processo.relator.id}"></option>
+                  </th:block>
+                </select>
+              </div>
+
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/coordenadores/processos}" class="btn btn-light border">Voltar</a>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

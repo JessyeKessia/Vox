@@ -1,116 +1,110 @@
-body {
-    font-family: Calibri !important;
-    padding-top: 3rem;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align: center;
-    align-items: center;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    background-color: #f5f5f5;
+body.auth-body {
+  min-height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at top left, #4f46e5 0, #0ea5e9 35%, #020617 80%);
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
-.centered {
-    position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+/* luzes suaves de fundo */
+body.auth-body::before,
+body.auth-body::after {
+  content: '';
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  z-index: 0;
 }
 
-.mb-4 {
-    width: 300px;
+body.auth-body::before {
+  background: #38bdf8;
+  top: -80px;
+  left: -60px;
 }
 
-
-.bd-placeholder-img {
-    font-size: 1.125rem;
-    text-anchor: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+body.auth-body::after {
+  background: #a855f7;
+  bottom: -100px;
+  right: -40px;
 }
 
-@media (min-width : 768px) {
-    .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-    }
+.auth-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 16px;
 }
 
-.starter-template {
-    padding: 3rem 1.5rem;
+.auth-card {
+  background: rgba(15, 23, 42, 0.78);
+  border-radius: 20px;
+  padding: 32px 28px 24px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
-.titulo {
-    font-size: 1.5rem;
-    background-color: #ededed;
-    margin: 5px 0 40px 0;
+.auth-logo {
+  max-width: 120px;
 }
 
-.label {
-    margin: 5px 0px 2px 0px;
-    display: flex;
+.auth-title {
+  font-family: 'Fugaz One', system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: #e5e7eb;
 }
 
-.submit-button {
-    margin: 5px 0px 2px 0px;
+.auth-input-group .input-group-text {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(51, 65, 85, 0.9);
+  color: #9ca3af;
 }
 
-.icon-space {
-    margin: 2px 5px 2px 5px;
+.auth-input {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(51, 65, 85, 0.9);
+  color: #e5e7eb;
 }
 
-.columnCenter {
-    text-align: center;
+.auth-input::placeholder {
+  color: #6b7280;
 }
 
-.columnRight {
-    text-align: right;
+.auth-input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
 }
 
-
-.error {
-    color: red;
+.auth-btn {
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  background: linear-gradient(90deg, #0ea5e9, #6366f1);
+  border: none;
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.5);
 }
 
-.form-signin {
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+.auth-btn:hover {
+  filter: brightness(1.05);
 }
 
-.form-signin .checkbox {
-    font-weight: 400;
+.text-light-50 {
+  color: rgba(226, 232, 240, 0.7);
 }
 
-.form-signin .form-control {
-    position: relative;
-    box-sizing: border-box;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
+.text-light-50:hover {
+  color: #e5e7eb;
 }
 
-.form-signin .form-control:focus {
-    z-index: 2;
-}
-
-.form-signin input[type="email"] {
-    margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;
-    margin-bottom: 10px;
-}
-
-.form-signin input[type="password"] {
-    margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    margin-bottom: 10px;
-}
-
-.autentique {
-    color: #565656;
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px 18px;
+  }
 }

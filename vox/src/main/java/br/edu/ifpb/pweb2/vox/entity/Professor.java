@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Entity
@@ -13,6 +15,8 @@ import lombok.*;
 @PrimaryKeyJoinColumn(name = "usuario_id")
 public class Professor extends Usuario {
 
+    @NotBlank(message = "Campo obrigatório!")
+    @Pattern(regexp = "^\\d{11}$", message = "O telefone deve conter apenas números (11 dígitos)")
     private String fone;
 
     @Column(unique = true)

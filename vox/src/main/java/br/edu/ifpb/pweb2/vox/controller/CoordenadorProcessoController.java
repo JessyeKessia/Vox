@@ -21,7 +21,6 @@ import br.edu.ifpb.pweb2.vox.service.AlunoService;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
 import br.edu.ifpb.pweb2.vox.service.ProfessorService;
 import jakarta.servlet.http.HttpSession;
-import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 
 @Controller
@@ -58,27 +57,32 @@ public class CoordenadorProcessoController {
 
     // pega o formulário de distribuição de processo
     @GetMapping("/distribuir/{id}")
-    public ModelAndView getForm(@PathVariable Long idProcesso) {
+    public ModelAndView getForm(@PathVariable Long id) {
         ModelAndView modelAndView = new ModelAndView("coordenadores/processos/form");
-        modelAndView.addObject("processo", processoService.findById(idProcesso));
+        modelAndView.addObject("processo", processoService.findById(id));
         return modelAndView;
     }
 
     @PostMapping("/distribuir/{id}")
-    public ModelAndView addDistribuicao(@PathVariable Long idProcesso, @RequestParam Long professorId, RedirectAttributes redirectAttributes ) {
-        
+    public ModelAndView addDistribuicao(
+        @PathVariable Long id, 
+        @RequestParam Long professorId, 
+        RedirectAttributes redirectAttributes ) {
+
         // acha o processo pelo id
-        Processo processo = processoService.findById(idProcesso);
+        Processo processo = processoService.findById(id);
         // seta o relator do processo
         processo.setRelator(professorService.findById(professorId));
         // seta a data de distribuição como a data atual
         processo.setDataDistribuicao(LocalDate.now());
         // seta o status do processo como DISTRIBUIDO
         processo.setStatus(StatusProcesso.DISTRIBUIDO);
+        // persiste no banco o processo atualizado
+        processoService.save(processo);
 
         redirectAttributes.addFlashAttribute("mensagem", "Processo distribuído com sucesso!");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/coordenador/processos");
+        modelAndView.setViewName("redirect:/coordenadores/processos");
         return modelAndView;   
     }
 
@@ -86,19 +90,18 @@ public class CoordenadorProcessoController {
     public ModelAndView list(
         HttpSession session, 
         @RequestParam(required = false) StatusProcesso status, 
-        @RequestParam(required = false) Long alunoId, 
-        @RequestParam(required = false) Long professorId) {
+        @RequestParam(required = false) Long alunoInteressadoId, 
+        @RequestParam(required = false) Long relatorId) {
 
         ModelAndView modelAndView = new ModelAndView("coordenadores/processos/list");
+        
         // mantém o que o usuário escolheu nos selects
         modelAndView.addObject("statusSelecionado", status);
-        modelAndView.addObject("alunoSelecionado", alunoId);
-        modelAndView.addObject("professorSelecionado", professorId);
+        modelAndView.addObject("alunoSelecionado", alunoInteressadoId);
+        modelAndView.addObject("professorSelecionado", relatorId);
 
         // busca usando service (lógica de filtragem fica lá)
-        List<Processo> processos = processoService.findForCoordenadorProcessos(status, alunoId, professorId);
-
-
+        List<Processo> processos = processoService.findForCoordenadorProcessos(status, alunoInteressadoId, relatorId);
         modelAndView.addObject("processos", processos);
 
         return modelAndView;

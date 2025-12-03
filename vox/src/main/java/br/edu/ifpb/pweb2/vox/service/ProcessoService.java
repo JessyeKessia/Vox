@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.edu.ifpb.pweb2.vox.entity.Processo;
+import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 import br.edu.ifpb.pweb2.vox.repository.ProcessoRepository;
-import org.springframework.data.domain.Sort;
 
 @Component
 public class ProcessoService implements Service<Processo, Long> {
@@ -39,14 +39,14 @@ public class ProcessoService implements Service<Processo, Long> {
         return processoRepository.findById(id).orElse(null);
     }
 
-    public List<Processo> findForAlunoProcessos(StatusProcesso status, String assunto, boolean ordenarPorDataCriacao) {
-        if (ordenarPorDataCriacao) {
-            return processoRepository.findByStatusAndAssunto(status, assunto, Sort.by("dataCriacao").descending());
-        } else {
-            return processoRepository.findByStatusAndAssunto(status, assunto, Sort.unsorted());
-        }
+    public List<Processo> findForAlunoProcessos(StatusProcesso status, String assunto, Long alunoInteressadoId) {
+        return processoRepository.findByStatusAndAssuntoAndAlunoInteressadoId(status, assunto, alunoInteressadoId);
     }
-    public List<Processo> findForCoordenadorProcessos(StatusProcesso status, Long alunoId, Long relatorId) {
-        return processoRepository.findForCoordenador(status, alunoId, relatorId);
+    public List<Processo> findForCoordenadorProcessos(StatusProcesso status, Long alunoInteressadoId, Long relatorId) {
+        return processoRepository.findForCoordenador(status, alunoInteressadoId, relatorId);
+    }
+
+    public List<Processo> findByProfessor(Professor professor) {
+        return processoRepository.findByRelatorId(professor.getId());
     }
 }

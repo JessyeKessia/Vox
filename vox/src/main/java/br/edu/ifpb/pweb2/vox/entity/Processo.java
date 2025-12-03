@@ -1,6 +1,9 @@
 package br.edu.ifpb.pweb2.vox.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.io.Serializable;
@@ -26,6 +29,7 @@ public class Processo implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_assunto")
+    @NotNull(message = "Campo obrigatório!")
     private Assunto assunto;
 
     private String numero;
@@ -45,6 +49,8 @@ public class Processo implements Serializable {
     private LocalDate dataParecer;
 
     // descrição simples do processo
+    @NotBlank(message = "Campo obrigatório!")
+    @Size(max = 200, message = "A descrição não pode ter mais de 200 caracteres")
     private String descricao;
 
     @Enumerated(EnumType.STRING)

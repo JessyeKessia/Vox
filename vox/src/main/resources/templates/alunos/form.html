@@ -1,35 +1,115 @@
 <!DOCTYPE html>
-<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastrar Aluno</title>
-</head>
-<body>
+<html
+  lang="pt_BR"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title=(${aluno.id} != null ? 'Editar Aluno' : 'Cadastrar Aluno'))}"
+>
+  <body>
+    <section class="py-4">
+      <div class="container-fluid">
+        <!-- Mensagens -->
+        <div th:replace="~{fragments/menu :: message-success}"></div>
+        <div th:replace="~{fragments/menu :: message-error}"></div>
 
-    <h1 th:text="${aluno.id} != null ? 'Editar Aluno' : 'Cadastrar Aluno'">Cadastrar Aluno</h1>
+        <!-- Card -->
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1
+                class="text-white h4 mb-1"
+                th:text="${aluno.id} != null ? 'Editar Aluno' : 'Cadastrar Aluno'"
+              >
+                Cadastrar Aluno
+              </h1>
+              <p class="text-white small mb-0">
+                Informe os dados do aluno e as credenciais de acesso ao sistema.
+              </p>
+            </div>
 
-    <p th:if="${mensagem}" th:text="${mensagem}" style="color:green;"></p>
+            <form
+              th:action="@{/alunos}"
+              th:object="${aluno}"
+              method="post"
+              class="row g-3"
+            >
+              <input type="hidden" th:field="*{id}" />
 
-    <form th:action="@{/alunos}" th:object="${aluno}" method="post">
-        <input type="hidden" th:field="*{id}" />
+              <div class="col-md-6">
+                <label
+                  for="nome"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  id="nome"
+                  th:field="*{nome}"
+                  class="form-control"
+                />
+                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-white small mt-1"></p>
+              </div>
 
-        <label for="nome">Nome:</label><br>
-        <input type="text" id="nome" th:field="*{nome}" required /><br><br>
+              <div class="col-md-6">
+                <label
+                  for="fone"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Telefone
+                </label>
+                <input
+                  type="text"
+                  id="fone"
+                  th:field="*{fone}"
+                  class="form-control"
+                />
+                <p th:if="${#fields.hasErrors('fone')}" th:errors="*{fone}" class="text-white small mt-1"></p>
+              </div>
 
-        <label for="fone">Telefone:</label><br>
-        <input type="text" id="fone" th:field="*{fone}" required /><br><br>
+              <div class="col-md-6">
+                <label
+                  for="E-mail"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Login
+                </label>
+                <input
+                  type="text"
+                  id="login"
+                  th:field="*{email}"
+                  required
+                  class="form-control"
+                />
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-white small mt-1"></p>
+              </div>
 
-        <label for="email">Email:</label><br>
-        <input type="text" id="email" th:field="*{email}" required /><br><br>
+              <div class="col-md-6">
+                <label
+                  for="senha"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Senha
+                </label>
+                <input
+                  type="password"
+                  id="senha"
+                  th:field="*{senha}"
+                  required
+                  class="form-control"
+                />
+                <p th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-white small mt-1"></p>
+              </div>
 
-        <label for="senha">Senha:</label><br>
-        <input type="password" id="senha" th:field="*{senha}" required /><br><br>
-
-        <button type="submit">Salvar</button>
-    </form>
-
-    <br>
-    <a th:href="@{/alunos}">Voltar à lista</a>
-
-</body>
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/alunos}" class="btn btn-light border">
+                  Voltar à lista
+                </a>
+                <button type="submit" class="btn btn-success">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

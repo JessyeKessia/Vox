@@ -1,46 +1,125 @@
 <!doctype html>
-<html lang="pt_BR">
+<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Vox – Login</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
 
-<head>
-    <title>Vox</title>
-    <meta charset="utf-8">
-    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css}" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-          crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <link rel="icon" th:href="@{/imagens/favicon.ico}" type="image/x-icon">
-    <link th:href="@{/css/auth.css}" rel="stylesheet">
-</head>
+    <link
+      th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css}"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fugaz+One&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+    <link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon" />
+  </head>
 
-<body class="text-center">
-    <form class="form-signin" th:action="@{/auth}" method="POST" th:object="${usuario}">
-        <div class="centered">
-            <img class="mb-4" th:src="@{/imagens/logo-vox.png}" alt="Logo do Vox">
-            <h1 class="h3 mb-3 font-weight-normal autentique">Por favor, autentique-se</h1>
-
-            <div th:if="${not #strings.isEmpty(mensagem)}"
-                 th:utext="${mensagem}"
-                 class="alert alert-danger alert-dismissible fade show" role="alert">
-
-            </div>
-
-            <label for="email" class="sr-only">Email</label> <input type="email" class="form-control input-login" placeholder="Email" required autofocus th:field="*{email}"> <label for="senha"
-                   class="sr-only">Senha</label>
-
-            <input type="password" class="form-control input-login" placeholder="Senha" required th:field="*{senha}">
-
-            <div class="checkbox mb-3">
-                <label> <input type="checkbox" value="lembrar">
-                    Lembrar-me
-                </label>
-            </div>
-            <button class="btn btn-lg btn-primary" type="submit">Entrar</button>
+  <body class="auth-body d-flex align-items-center justify-content-center">
+    <div class="auth-wrapper">
+      <form
+        class="auth-card"
+        th:action="@{/auth}"
+        method="POST"
+        th:object="${usuario}"
+      >
+        <div class="text-center mb-4">
+          <img
+            class="mb-3 auth-logo"
+            th:src="@{/images/logo-ofic.png}"
+            alt="Logo do Vox"
+          />
+          <h1 class="h4 mb-1 auth-title">Bem-vindo ao Vox</h1>
+          <p class="text-muted small mb-0">
+            Faça login para acessar o painel acadêmico.
+          </p>
         </div>
-    </form>
 
-</body>
+        <div
+          th:if="${not #strings.isEmpty(mensagem)}"
+          th:utext="${mensagem}"
+          class="alert alert-danger alert-dismissible fade show small"
+          role="alert"
+        ></div>
 
+        <div class="mb-3 text-start">
+          <label for="email" class="form-label small text-uppercase text-muted">
+            Email institucional
+          </label>
+          <div class="input-group input-group-sm auth-input-group">
+            <span class="input-group-text">
+              <i class="bi bi-envelope"></i>
+            </span>
+            <input
+              type="email"
+              id="email"
+              class="form-control auth-input"
+              placeholder="seu.email@instituicao.br"
+              required
+              autofocus
+              th:field="*{email}"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label for="senha" class="form-label small text-uppercase text-muted">
+            Senha
+          </label>
+          <div class="input-group input-group-sm auth-input-group">
+            <span class="input-group-text">
+              <i class="bi bi-lock"></i>
+            </span>
+            <input
+              type="password"
+              id="senha"
+              class="form-control auth-input"
+              placeholder="Digite sua senha"
+              required
+              th:field="*{senha}"
+            />
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="form-check small">
+            <!-- <input
+              type="checkbox"
+              class="form-check-input"
+              id="lembrar"
+              value="lembrar"
+            /> -->
+            <!-- <label class="form-check-label" for="lembrar"> -->
+              <!-- Lembrar-me
+            </label> -->
+          </div>
+          <!-- <a href="#" class="small text-decoration-none text-light-50">
+            Esqueceu a senha?
+          </a> -->
+        </div>
+
+        <button class="btn btn-primary w-100 auth-btn" type="submit">
+          Entrar
+        </button>
+
+        <p class="text-center text-muted small mt-3 mb-0">
+          © <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2025</span>
+          Vox · Sistema Acadêmico
+        </p>
+      </form>
+    </div>
+  </body>
 </html>

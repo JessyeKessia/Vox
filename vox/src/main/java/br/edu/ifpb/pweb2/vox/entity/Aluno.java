@@ -1,6 +1,8 @@
 package br.edu.ifpb.pweb2.vox.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,6 +15,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @PrimaryKeyJoinColumn(name = "usuario_id")
 public class Aluno extends Usuario {
 
+    @NotBlank(message = "Campo obrigatório!")
+    @Pattern(regexp = "^\\d{11}$", message = "O telefone deve conter apenas números (11 dígitos)")
     private String fone;
 
     @Column(unique = true)

@@ -2,6 +2,7 @@ package br.edu.ifpb.pweb2.vox.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import br.edu.ifpb.pweb2.vox.repository.AlunoRepository;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/processos")
@@ -60,7 +62,26 @@ public class ProcessoController {
 
     // salva o processando quando você clica em salvar no formulário
     @PostMapping
-    public ModelAndView addProcesso(Processo processo, ModelAndView modelAndView, HttpSession session) {
+    public ModelAndView addProcesso(@Valid Processo processo, BindingResult bindingResult, ModelAndView modelAndView, HttpSession session) {
+        
+        // valida Assunto enviado evitar problemas no Hibernate TransientPropertyValueException
+        if (processo.getAssunto() == null || processo.getAssunto().getId() == null) {
+            bindingResult.rejectValue("assunto", "assunto.empty", "Selecione um assunto");
+        } else {
+            var assunto = assuntoService.findById(processo.getAssunto().getId());
+            if (assunto.isPresent()) {
+                processo.setAssunto(assunto); 
+            } else {
+                bindingResult.rejectValue("assunto", "assunto.notfound", "Assunto inválido");
+            }
+        }
+
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("processos/form");
+            modelAndView.addObject("processo", processo);
+            return modelAndView;
+        }
+
         // pega o usuário logado da sessão
         Usuario usuario = (Usuario) session.getAttribute("usuario");
 
@@ -82,46 +103,37 @@ public class ProcessoController {
     public ModelAndView list(
         @RequestParam(required = false) String status,
         @RequestParam(required = false) String assunto,
-        @RequestParam(required = false, defaultValue = "false") boolean ordenarPorData) 
+        @RequestParam(required = false, defaultValue = "desc") String ordenar, 
+        HttpSession session) 
         {
-        
-        // seta o caminho da view
-        ModelAndView modelAndView = new ModelAndView("processos/list");
+            ModelAndView mv = new ModelAndView("processos/list");
 
-        // elementos marcados pelo usuário sendo mandandos para a view
-        modelAndView.addObject("statusSelecionado", status);
-        modelAndView.addObject("assuntoSelecionado", assunto);
+            // pega o usuário da sessão (pode ser null, não redireciona)
+            Usuario usuario = (Usuario) session.getAttribute("usuario");
 
-        // FILTROS
-        // devolve filtros para a view
-        modelAndView.addObject("statusSelecionado", status);
-        modelAndView.addObject("assuntoSelecionado", assunto);
-        modelAndView.addObject("ordenarPorData", ordenarPorData);
+            Long alunoId = (usuario != null) ? usuario.getId() : null;
 
-        // converte o status recebido para Enum (se tiver)
-        StatusProcesso statusEnum = null;
-        if (status != null && !status.isBlank()) {
-            try {
-                statusEnum = StatusProcesso.valueOf(status);
-            } catch (Exception e) {
-                statusEnum = null; // evita quebrar a aplicação
+            // converte status
+            StatusProcesso statusEnum = null;
+            if (status != null && !status.isBlank()) {
+                try {
+                    statusEnum = StatusProcesso.valueOf(status);
+                } catch (Exception ignored) {}
             }
+
+            // assunto
+            String assuntoFiltro = (assunto != null && !assunto.isBlank()) ? assunto : null;
+
+            // chama o serviço passando o id do aluno (mesmo se null)
+            List<Processo> processos = processoService.findForAlunoProcessos(statusEnum, assuntoFiltro, alunoId);
+
+            // devolve filtros e lista
+            mv.addObject("processos", processos);
+            mv.addObject("statusSelecionado", status);
+            mv.addObject("assuntoSelecionado", assunto);
+
+            return mv;
         }
-
-        // prepara assunto
-        String assuntoFiltro = (assunto != null && !assunto.isBlank()) ? assunto : null;
-
-        // chamada ao service
-        List<Processo> processos = processoService.findForAlunoProcessos(
-                statusEnum,
-                assuntoFiltro,
-                ordenarPorData
-        );
-
-        modelAndView.addObject("processos", processos);
-        return modelAndView;
-            
-    }
     // lista os processos de designados a cada professor
     @GetMapping("/professores")
     public ModelAndView listarProcessos(HttpSession session) {

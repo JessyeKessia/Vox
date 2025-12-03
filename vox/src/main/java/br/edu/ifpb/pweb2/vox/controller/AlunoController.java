@@ -3,11 +3,13 @@ package br.edu.ifpb.pweb2.vox.controller;
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.service.AlunoService;
 import br.edu.ifpb.pweb2.vox.util.PasswordUtil;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -36,10 +38,22 @@ public class AlunoController {
 
     // salva o aluno quando você clica em salvar no formulário
     @PostMapping
-    public ModelAndView addAluno(Aluno aluno, ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
+    public ModelAndView addAluno(@Valid Aluno aluno, BindingResult result, ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
+
+        /// VERIFICAR SE E-MAIL JÁ EXISTE E NÃO É DO MESMO ALUNO ---
         
+        // define a role de aluno
         if (aluno.getRole() == null) {
             aluno.setRole(Role.ALUNO);
+        }
+
+        // validação manual ou automática
+        if (result.hasErrors()) {
+            // não deixa sair do forms se tiver algum problema
+            modelAndView.setViewName("alunos/form");
+            // volta o objeto aluno 
+            modelAndView.addObject("aluno", aluno);
+            return modelAndView;
         }
 
         // só hashear se a senha foi fornecida

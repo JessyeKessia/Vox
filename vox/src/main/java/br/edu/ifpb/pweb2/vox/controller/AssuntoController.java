@@ -1,6 +1,7 @@
 package br.edu.ifpb.pweb2.vox.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/assuntos")
@@ -28,9 +30,18 @@ public class AssuntoController {
 
     // Salva um novo assunto
     @PostMapping
-    public ModelAndView save(Assunto assunto, RedirectAttributes redirectAttributes, ModelAndView model) {
+    public ModelAndView save(@Valid Assunto assunto, BindingResult bindingResult, RedirectAttributes redirectAttributes, ModelAndView model) {
+        
+        // Se houver erros de validação, retorna para o formulário
+        if (bindingResult.hasErrors()) {
+            model.setViewName("assuntos/form");
+            model.addObject("assunto", assunto);
+            return model;
+        }
+        
         // salvou o assunto so serviço
         assuntoService.save(assunto);
+
         redirectAttributes.addFlashAttribute("mensagem", "Assunto cadastrado com sucesso!");
         // redirecionou para a página
         model.setViewName("redirect:/assuntos");

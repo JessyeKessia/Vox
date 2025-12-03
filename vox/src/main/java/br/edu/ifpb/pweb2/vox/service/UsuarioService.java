@@ -54,5 +54,8 @@ public class UsuarioService implements Service<Usuario, Long> {
     public boolean isAdmin(Usuario usuario) {
         return usuario.hasRole("ADMIN");
     }
+    public boolean existsByEmail(String email) {
+        return usuarioRepository.existsByEmail(email);
+    }
 }
 

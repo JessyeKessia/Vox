@@ -1,37 +1,86 @@
 <!DOCTYPE html>
-<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro de Processo</title>
-</head>
-<body>
+<html
+  lang="pt_BR"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title='Cadastro de Processo')}"
+>
+  <body>
+    <section class="py-4">
+      <div class="container-fluid">
+        <div th:replace="~{fragments/menu :: message-success}"></div>
 
-    <h1>Vox - Cadastro de Processo</h1>
+        <!-- Card de cadastro -->
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1 class="text-white h4 mb-1">Vox - Cadastro de Processo</h1>
+              <p class="text-white small mb-0">
+                Preencha os campos abaixo para registrar um novo processo no
+                sistema.
+              </p>
+            </div>
 
-    <div th:if="${mensagem}" style="color: rgb(221, 40, 40);" th:text="${mensagem}"></div>
+            <form
+              th:action="@{/processos}"
+              th:object="${processo}"
+              method="post"
+              class="row g-3"
+            >
+              <input type="hidden" th:field="*{id}" />
 
-    <form th:action="@{/processos}" th:object="${processo}" method="post">
-        <input type="hidden" th:field="*{id}" />
+              <div class="col-md-6">
+                <label
+                  for="assunto"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Assunto
+                </label>
+                <select
+                  id="assunto"
+                  th:field="*{assunto.id}"
+                  class="form-select"
+                >
+                  <option value="">Selecione um assunto...</option>
+                  <option
+                    th:each="ass : ${assuntosItens}"
+                    th:value="${ass.id}"
+                    th:text="${ass.nome}"
+                  ></option>
+                </select>
+                <p th:if="${#fields.hasErrors('assunto')}" th:errors="*{assunto}" class="text-white small mt-1"></p>
+              </div>
 
-        <label for="assunto">Assunto:</label><br>
-        <select id="assunto" th:field="*{assunto.id}" required>
-            <option value="">Selecione um assunto...</option>
-            <option th:each="ass : ${assuntosItens}" 
-                    th:value="${ass.id}" 
-                    th:text="${ass.nome}">
-            </option>
-        </select>
-        <br><br>
+              <div class="col-12">
+                <label
+                  for="requerimento"
+                  class="form-label small text-uppercase text-white"
+                >
+                  Requerimento
+                </label>
+                <textarea
+                  id="requerimento"
+                  th:field="*{descricao}"
+                  rows="6"
+                  class="form-control"
+                  placeholder="Digite aqui a descrição do seu requerimento..."
+                ></textarea>
+                <small class="text-white">
+                  Descreva de forma clara o pedido, incluindo os principais
+                  detalhes necessários para análise.
+                </small>
+                <p th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-white small mt-1"></p>
+              </div>
 
-        <label for="requerimento">Requerimento:</label><br>
-        <textarea id="requerimento" th:field="*{descricao}" 
-                  rows="5" cols="50" placeholder="Digite aqui a descrição do seu requerimento..." required>
-        </textarea>
-        <br><br>
-
-        <button type="submit">Salvar</button>
-        <a th:href="@{/processos}">Cancelar</a>
-    </form>
-
-</body>
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/processos}" class="btn btn-light border">
+                  Cancelar
+                </a>
+                <button type="submit" class="btn btn-success">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

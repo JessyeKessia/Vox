@@ -3,8 +3,11 @@ package br.edu.ifpb.pweb2.vox.controller;
 import br.edu.ifpb.pweb2.vox.entity.Colegiado;
 import br.edu.ifpb.pweb2.vox.service.ColegiadoService;
 import br.edu.ifpb.pweb2.vox.service.ProfessorService;
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +19,12 @@ public class ColegiadoController {
 
     @Autowired
     private ProfessorService professorService;
+
+    // entrega todos os professores para o modelo certinh poder fazer a listagem e associação 
+    @ModelAttribute("professores")
+    public void getProfessores(ModelAndView model) {
+        model.addObject("professores", professorService.findAll());
+    }
 
     @GetMapping
     public ModelAndView list(ModelAndView modelAndView) {
@@ -33,10 +42,14 @@ public class ColegiadoController {
     }
 
     @PostMapping
-    public ModelAndView add(Colegiado colegiado, ModelAndView modelAndView) {
+    public ModelAndView addColegiado(@Valid Colegiado colegiado, BindingResult bindingResult, ModelAndView modelAndView) {
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("colegiados/form");
+            modelAndView.addObject("colegiado", colegiado);
+            return modelAndView;
+        }
         colegiadoService.save(colegiado);
-        modelAndView.setViewName("colegiados/list");
-        modelAndView.addObject("colegiados", colegiadoService.findAll());
+        modelAndView.setViewName("redirect:/colegiados");
         return modelAndView;
     }
 

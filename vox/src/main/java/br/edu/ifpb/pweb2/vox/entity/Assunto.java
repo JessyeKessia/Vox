@@ -5,6 +5,7 @@ import java.util.Set;
 import java.io.Serializable;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 
@@ -19,9 +20,15 @@ public class Assunto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 255)
+    @NotBlank(message = "Campo obrigatório!")
     private String nome;
 
     @OneToMany(mappedBy = "assunto")
     private Set<Processo> processos = new HashSet<Processo>();
+
+    public boolean isPresent() {
+        return this.id != null;
+    }
 }
 

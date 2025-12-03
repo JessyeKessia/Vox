@@ -4,9 +4,11 @@ import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.service.ProfessorService;
 import br.edu.ifpb.pweb2.vox.util.PasswordUtil;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,25 +28,34 @@ public class ProfessorController {
     }
 
     @PostMapping
-    public ModelAndView addProfessor(Professor professor, ModelAndView modelAndView) {
-        
-        // define a role padrão do professor
-        if (professor.getRole() == null) {
-           if (professor.isCoordenador()) {
-               professor.setRole(Role.COORDENADOR);
-           } else {
-               professor.setRole(Role.PROFESSOR);
-           }
-        }
+    public ModelAndView addProfessor(@Valid Professor professor,  BindingResult result, ModelAndView modelAndView) {
+    
+        // validação manual ou automática
+        if (result.hasErrors()) {
+            // não deixa sair do forms se tiver algum problema
+            modelAndView.setViewName("professores/form");
+            // volta o objeto professor 
+            modelAndView.addObject("professor", professor);
+            return modelAndView;
+        } else {
+                // define a role padrão do professor
+            if (professor.getRole() == null) {
+                if (professor.isCoordenador()) {
+                    professor.setRole(Role.COORDENADOR);
+                } else {
+                    professor.setRole(Role.PROFESSOR);
+                }
+            }
 
-        // só hashear se a senha foi fornecida
-        if (professor.getSenha() != null && !professor.getSenha().isBlank()) {
-            professor.setSenha(PasswordUtil.hashPassword(professor.getSenha()));
-        }
+            // só hashear se a senha foi fornecida
+            if (professor.getSenha() != null && !professor.getSenha().isBlank()) {
+                professor.setSenha(PasswordUtil.hashPassword(professor.getSenha()));
+            }
 
-        professorService.save(professor);
-        modelAndView.setViewName("redirect:/professores");
-        return modelAndView;
+            professorService.save(professor);
+            modelAndView.setViewName("redirect:/professores");
+            return modelAndView;
+        }
     }
 
     @GetMapping

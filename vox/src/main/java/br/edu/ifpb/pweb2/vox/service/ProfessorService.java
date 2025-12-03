@@ -43,5 +43,6 @@ public class ProfessorService implements Service<Professor, Long> {
     public List<Professor> findByCoordenadorFalse() {
         return professorRepository.findByCoordenadorFalse();
     }
+
 }
 
