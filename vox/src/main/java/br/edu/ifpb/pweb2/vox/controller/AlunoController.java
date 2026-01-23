@@ -1,8 +1,7 @@
-package br.edu.ifpb.pweb2.vox.controller;
+/* package br.edu.ifpb.pweb2.vox.controller;
 
 import br.edu.ifpb.pweb2.vox.entity.Aluno;
 import br.edu.ifpb.pweb2.vox.service.AlunoService;
-import br.edu.ifpb.pweb2.vox.util.PasswordUtil;
 import jakarta.validation.Valid;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import br.edu.ifpb.pweb2.vox.enums.Role;
 
 @Controller
 @RequestMapping("/alunos")
@@ -40,25 +38,13 @@ public class AlunoController {
     @PostMapping
     public ModelAndView addAluno(@Valid Aluno aluno, BindingResult result, ModelAndView modelAndView, RedirectAttributes redirectAttributes) {
 
-        /// VERIFICAR SE E-MAIL JÁ EXISTE E NÃO É DO MESMO ALUNO ---
-        
-        // define a role de aluno
-        if (aluno.getRole() == null) {
-            aluno.setRole(Role.ALUNO);
-        }
-
-        // validação manual ou automática
+        // validação dos elementos
         if (result.hasErrors()) {
             // não deixa sair do forms se tiver algum problema
             modelAndView.setViewName("alunos/form");
             // volta o objeto aluno 
             modelAndView.addObject("aluno", aluno);
             return modelAndView;
-        }
-
-        // só hashear se a senha foi fornecida
-        if (aluno.getSenha() != null && !aluno.getSenha().isBlank()) {
-            aluno.setSenha(PasswordUtil.hashPassword(aluno.getSenha()));
         }
         
         // salva o aluno no repositorio
@@ -76,17 +62,18 @@ public class AlunoController {
         return modelAndView;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/edit")
     public ModelAndView getAlunoById(@PathVariable("id") Long id, ModelAndView model) {
         model.addObject("aluno", alunoService.findById(id));
         model.setViewName("alunos/form");
         return model;
     }
     
-    @GetMapping("/delete/{id}")
+    @GetMapping("/{id}/delete")
     public String deleteAluno(@PathVariable("id") Long id) {
         alunoService.deleteById(id);
         return "redirect:/alunos";
 }
 
 }
+ */

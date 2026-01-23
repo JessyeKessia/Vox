@@ -1,4 +1,4 @@
-package br.edu.ifpb.pweb2.vox.controller;
+/* package br.edu.ifpb.pweb2.vox.controller;
 
 import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.enums.Role;
@@ -65,16 +65,17 @@ public class ProfessorController {
         return modelAndView;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/edit")
     public ModelAndView getProfessorById(@PathVariable("id") Long id, ModelAndView model) {
         model.addObject("professor", professorService.findById(id));
         model.setViewName("professores/form");
         return model;
     }
-    @GetMapping("/delete/{id}")
+    @GetMapping("/{id}/delete")
     public String deleteProfessor(@PathVariable("id") Long id) {
         professorService.deleteById(id);
         return "redirect:/professores";
 }
 
 }
+ */

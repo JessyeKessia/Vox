@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <nav
-    th:fragment="navbar"
-    class="navbar navbar-expand-lg navbar-dark shadow-sm"
-    style="
-      background: linear-gradient(90deg, #0d6efd, #6610f2);
-      backdrop-filter: blur(12px);
-    "
-  >
+  <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark shadow-sm" style=" background: linear-gradient(90deg, #0d6efd, #6610f2); backdrop-filter: blur(12px);">
     <div class="container-fluid px-4">
-      <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/home}">
-        <img th:src="@{/images/logo-ofic.png}" width="100" alt="VOX Logo" margin="5" />
+      <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/admin/home}">
+        <img th:src="@{/imagens/logo-ofic.png}" width="100" alt="VOX Logo" margin="5" />
 
         <!-- texto da marca -->
         <div class="d-flex flex-column">
@@ -19,15 +12,7 @@
         </div>
       </a>
 
-      <button
-        class="navbar-toggler border-0"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -67,53 +52,4 @@
       </div>
     </div>
   </nav>
-  <div
-    th:fragment="message-success"
-    th:if="${mensagemSucesso}"
-    class="alert alert-success d-flex align-items-start shadow-sm border-0 rounded-3 mt-3"
-    style="border-left: 4px solid #198754"
-    role="alert"
-  >
-    <div
-      class="me-3 d-flex align-items-center justify-content-center rounded-circle"
-      style="width: 32px; height: 32px; background: rgba(25, 135, 84, 0.12)"
-    >
-      <i class="bi bi-check-circle-fill text-success"></i>
-    </div>
-    <div class="flex-grow-1 small">
-      <span class="fw-semibold d-block mb-1">Tudo certo!</span>
-      <span th:text="${mensagemSucesso}">Mensagem de Sucesso!</span>
-    </div>
-    <button
-      type="button"
-      class="btn-close ms-2"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
-
-  <div
-    th:fragment="message-error"
-    th:if="${mensagemErro}"
-    class="alert alert-danger d-flex align-items-start shadow-sm border-0 rounded-3 mt-3"
-    style="border-left: 4px solid #dc3545"
-    role="alert"
-  >
-    <div
-      class="me-3 d-flex align-items-center justify-content-center rounded-circle"
-      style="width: 32px; height: 32px; background: rgba(220, 53, 69, 0.12)"
-    >
-      <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-    </div>
-    <div class="flex-grow-1 small">
-      <span class="fw-semibold d-block mb-1">Ops, algo deu errado</span>
-      <span th:text="${mensagemErro}">Mensagem de Erro!</span>
-    </div>
-    <button
-      type="button"
-      class="btn-close ms-2"
-      data-bs-dismiss="alert"
-      aria-label="Close"
-    ></button>
-  </div>
 </html>

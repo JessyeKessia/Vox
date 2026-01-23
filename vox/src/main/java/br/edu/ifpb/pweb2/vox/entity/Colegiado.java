@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 // importando a anotação de validação personalizada e global
@@ -40,9 +41,6 @@ public class Colegiado {
     @NotBlank(message = "Campo obrigatório!")
     private String curso;
 
-    @ManyToMany
-    @JoinTable(name = "colegiado_professor",
-            joinColumns = @JoinColumn(name = "colegiado_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id"))
-    private List<Professor> membros;
+    @ManyToMany(mappedBy = "colegiados", fetch = FetchType.EAGER)
+    private Set<Professor> membros = new HashSet<>();
 }

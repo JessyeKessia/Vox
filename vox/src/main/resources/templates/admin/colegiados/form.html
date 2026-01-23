@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+  
+  <!-- Define o título da página -->
+  <head>
+    <title layout:fragment="titulo">Cadastrar Colegiado</title>
+  </head>
+  <body>
+    <section layout:fragment="content" class="py-4">
+      <div class="container-fluid">
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1 class="text-white h4 mb-1">Cadastro/edição de Colegiado</h1>
+              <p class="text-white small mb-0"> Defina as informações do colegiado, período de vigência e membros participantes.</p>
+            </div>
+
+            <form th:action="@{/admin/colegiados/save}" th:object="${colegiado}" method="POST" class="row g-3">
+            
+              <input type="hidden" th:field="*{id}" />
+
+              <!-- Erro global -->
+              <div th:if="${#fields.hasGlobalErrors()}" class="col-12">
+                <div class="alert alert-danger p-2">
+                  <ul class="mb-0">
+                    <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="descricao" class="form-label small text-uppercase text-white"> Descrição </label>
+                <input type="text" id="descricao" th:field="*{descricao}" class="form-control"/>
+                <p th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-6">
+                <label for="portaria" class="form-label small text-uppercase text-white"> Portaria </label>
+                <input type="text" id="portaria" th:field="*{portaria}" class="form-control"/>
+                <p th:if="${#fields.hasErrors('portaria')}" th:errors="*{portaria}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-6">
+                <label for="curso" class="form-label small text-uppercase text-white"> Curso </label>
+                <input type="text" id="curso" th:field="*{curso}" class="form-control"/>
+                <p th:if="${#fields.hasErrors('curso')}" th:errors="*{curso}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-3">
+                <label for="dataInicio" class="form-label small text-uppercase text-white"> Data início </label>
+                <input type="date" id="dataInicio" th:field="*{dataInicio}" class="form-control"/>
+                <p th:if="${#fields.hasErrors('dataInicio')}" th:errors="*{dataInicio}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-3">
+                <label for="dataFim" class="form-label small text-uppercase text-white"> Data fim </label>
+                <input type="date" id="dataFim" th:field="*{dataFim}" class="form-control"/>
+                <p th:if="${#fields.hasErrors('dataFim')}" th:errors="*{dataFim}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label small text-uppercase text-white"> Membros </label>
+
+                <!-- múltipla seleção -->
+                <select name="membrosIds" multiple size="6" class="form-select">
+                  <option th:each="prof : ${professores}" th:value="${prof.id}" th:text="${prof.nome}" th:selected="${colegiado.membros != null and colegiado.membros.contains(prof)}">
+                  </option>
+                </select>
+
+                <small class="text-white"> Segure Ctrl (ou Cmd no macOS) para selecionar ou desmarcar vários professores.</small>
+              </div>
+
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <button th:href="@{/admin/colegiados}" class="btn btn-light border"> Cancelar </button>
+                <button type="submit" class="btn btn-success">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

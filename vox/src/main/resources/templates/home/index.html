@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: base(content=~{::section}, title='Página Inicial')}">
-  <head></head>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Página Inicial'">
   <body>
-    <!-- menu -->
-    <div th:replace="~{fragments/menu :: navbar}"></div>
 
-   <section class="py-5">
+   <section layout:fragment="content" class="py-5">
       <div class="container">
         <div class="card border-primary bg-white text-primary shadow-sm">
           <div class="card-body">
@@ -18,7 +17,7 @@
                 </p>
               </div>
               <div class="col-md-4 text-center d-none d-md-block">
-                <img th:src="@{/images/img.svg}" alt="Vox" class="img-fluid" style="max-height:400px; width:auto; object-fit:contain;" />
+                <img th:src="@{/imagens/img.svg}" alt="Vox" class="img-fluid" style="max-height:400px; width:auto; object-fit:contain;" />
               </div>
             </div>
           </div>

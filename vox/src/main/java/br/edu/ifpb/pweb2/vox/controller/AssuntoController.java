@@ -1,4 +1,4 @@
-package br.edu.ifpb.pweb2.vox.controller;
+/* package br.edu.ifpb.pweb2.vox.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -57,14 +57,14 @@ public class AssuntoController {
     }
 
     // Editar assunto existente
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/edit")
     public ModelAndView editAssunto(@PathVariable("id") Long id, ModelAndView model) {
         model.addObject("assunto", assuntoService.findById(id));
         model.setViewName("assuntos/form");
         return model;
     }
-
-    @GetMapping("/delete/{id}")
+    // Deletar assunto 
+    @GetMapping("/{id}/delete")
     public ModelAndView deleteAssunto(@PathVariable("id") Long id, RedirectAttributes redirectAttributes, ModelAndView model) {
         assuntoService.deleteById(id);
         redirectAttributes.addFlashAttribute("mensagem", "Assunto removido com sucesso!");
@@ -72,3 +72,4 @@ public class AssuntoController {
         return model;
 }
 }
+ */

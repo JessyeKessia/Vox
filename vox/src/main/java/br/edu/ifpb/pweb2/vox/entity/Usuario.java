@@ -1,42 +1,79 @@
 package br.edu.ifpb.pweb2.vox.entity;
 
+import br.edu.ifpb.pweb2.vox.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import br.edu.ifpb.pweb2.vox.enums.Role;
-import jakarta.validation.constraints.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Usuario {
-
-    @Id
+public class Usuario implements UserDetails {
+    
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    private Long id;
 
-    @NotBlank(message = "O nome é obrigatório")
-    @Size(max = 100, message = "O nome deve ter no máximo 100 caracteres")
-    protected String nome;
-
-    @NotBlank(message = "O email é obrigatório")
-    @Email(message = "Email inválido")
     @Column(unique = true)
-    protected String email;
+    private String matricula;
 
-    @NotBlank(message = "A senha é obrigatória")
-    @Size(min = 6, message = "A senha deve ter entre 6 e 30 caracteres")
-    protected String senha;
+    private String nome;
+  
+    private String telefone;
+    
+    @Email(message = "Insira um Email válido")
+    @Column(unique = true, nullable = false)
+    private String username;
 
+    @NotBlank(message = "Campo Obrigatório")
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    protected Role role;
+    private String password;
 
-    // verifica se o usuario tem a role especificada
-    public boolean hasRole(String roleName) {
-        return role.name().equalsIgnoreCase(roleName);
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(() -> "ROLE_" + role.name());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+    @Override public boolean isEnabled() { return true; }
+
+    @PrePersist
+    public void gerarMatricula() {
+        if (this.matricula == null || this.matricula.isBlank()) {
+            int ano = LocalDate.now().getYear();
+            int aleatorio = ThreadLocalRandom.current().nextInt(0, 1_000_000);
+            this.matricula = String.format("%d-%06d", ano, aleatorio);
+        }
     }
 }
+
+
 
 

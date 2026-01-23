@@ -1,9 +1,13 @@
-package br.edu.ifpb.pweb2.vox.controller;
+/* package br.edu.ifpb.pweb2.vox.controller;
 
 import br.edu.ifpb.pweb2.vox.entity.Colegiado;
+import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.service.ColegiadoService;
 import br.edu.ifpb.pweb2.vox.service.ProfessorService;
+import br.edu.ifpb.pweb2.vox.service.UsuarioService;
 import jakarta.validation.Valid;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,13 +22,16 @@ public class ColegiadoController {
     private ColegiadoService colegiadoService;
 
     @Autowired
-    private ProfessorService professorService;
+    private UsuarioService usuarioService;
 
     // entrega todos os professores para o modelo certinh poder fazer a listagem e associação 
     @ModelAttribute("professores")
-    public void getProfessores(ModelAndView model) {
-        model.addObject("professores", professorService.findAll());
+    private List<?> listarProfessores() {
+        return usuarioService.findAll().stream()
+            .filter(u -> u.getRole() == Role.PROFESSOR || u.getRole() == Role.COORDENADOR)
+            .toList();
     }
+    
 
     @GetMapping
     public ModelAndView list(ModelAndView modelAndView) {
@@ -67,4 +74,7 @@ public class ColegiadoController {
         colegiadoService.deleteById(id);
         return "redirect:/colegiados";
     }
+
+    
 }
+ */

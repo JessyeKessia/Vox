@@ -3,30 +3,27 @@ package br.edu.ifpb.pweb2.vox.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import br.edu.ifpb.pweb2.vox.entity.Processo;
 import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 import br.edu.ifpb.pweb2.vox.repository.ProcessoRepository;
 
-@Component
-public class ProcessoService implements Service<Processo, Long> {
+@Service
+public class ProcessoService {
     
     @Autowired
     ProcessoRepository processoRepository;
 
-    @Override
     public List<Processo> findAll() {
         return processoRepository.findAll();
     }
 
-    @Override
     public Processo save(Processo processo) {
         return processoRepository.save(processo);
     }
 
-    @Override
     public void deleteById(Long id) {
         if (processoRepository.findById(id) != null) {
             processoRepository.deleteById(id);
@@ -34,7 +31,6 @@ public class ProcessoService implements Service<Processo, Long> {
             throw new RuntimeException("Processo com ID " + id + " não encontrado.");
         }
     }
-    @Override
     public Processo findById(Long id) {
         return processoRepository.findById(id).orElse(null);
     }
