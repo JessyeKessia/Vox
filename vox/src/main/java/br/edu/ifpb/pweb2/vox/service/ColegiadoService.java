@@ -25,6 +25,9 @@ public class ColegiadoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
 
     public List<Colegiado> findAll() {
         return colegiadoRepository.findAll();
@@ -43,28 +46,16 @@ public class ColegiadoService {
     public Colegiado save(Colegiado colegiado, List<Long> membrosIds) {
         
        if (membrosIds != null && !membrosIds.isEmpty()) {
+        List<Professor> membros = usuarioService.findProfessoresByIds(membrosIds);
+        colegiado.setMembros(new HashSet<>(membros));
 
-            List<Usuario> usuarios = usuarioRepository.findAllById(membrosIds);
-
-            Set<Professor> membros = new HashSet<>(
-                usuarios.stream()
-                    .filter(u ->
-                        u.getRole() == Role.PROFESSOR ||
-                        u.getRole() == Role.COORDENADOR
-                    )
-                    .filter(u -> u instanceof Professor)
-                    .map(u -> (Professor) u)
-                    .collect(Collectors.toSet())
-            );
-
-            colegiado.setMembros(membros);
-
-            for (Professor professor : membros) {
-                professor.getColegiados().add(colegiado);
-            }
+        // Mantém a relação bidirecional
+        for (Professor professor : membros) {
+            professor.getColegiados().add(colegiado);
         }
+    }
 
-        return colegiadoRepository.save(colegiado);
+    return colegiadoRepository.save(colegiado);
     }
     
     @Transactional

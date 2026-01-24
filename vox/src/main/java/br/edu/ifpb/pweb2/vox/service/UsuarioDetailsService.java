@@ -19,7 +19,7 @@ public class UsuarioDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String username)
       throws UsernameNotFoundException {
 
-        Usuario usuario = usuarioRepository.findByUsername(username);
+        Usuario usuario = usuarioRepository.findByEmail(username);
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuário não encontrado");
         }
@@ -27,5 +27,3 @@ public class UsuarioDetailsService implements UserDetailsService {
 
   }
 }
-
-// depois tem q ver aqui pra n quebrar no erro do valor nulo

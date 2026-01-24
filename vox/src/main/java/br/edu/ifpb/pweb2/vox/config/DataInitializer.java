@@ -7,16 +7,12 @@ import br.edu.ifpb.pweb2.vox.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class DataInitializer implements CommandLineRunner {
 
   @Autowired
   private UsuarioService usuarioService;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
 
   @Override
   public void run(String... args) {
@@ -27,8 +23,8 @@ public class DataInitializer implements CommandLineRunner {
 
       Usuario admin = new Usuario();
       admin.setNome("Jessye Pereira");
-      admin.setUsername(adminEmail);
-      admin.setPassword(passwordEncoder.encode("123"));
+      admin.setEmail(adminEmail);
+      admin.setSenha("admin123");
       admin.setTelefone("83988747097");
       admin.setRole(Role.ADMIN);
 

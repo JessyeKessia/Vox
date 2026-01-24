@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
+import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 
@@ -30,13 +31,12 @@ public class UsuarioService {
     }
 
     public Usuario findByEmail(String email) {
-        return usuarioRepository.findByUsername(email);
+        return usuarioRepository.findByEmail(email);
     }
 
     @Transactional
     public Usuario save(Usuario usuario) {
-
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        usuario.setSenha(passwordEncoder.encode(usuario.getPassword()));
 
         // Se for PROFESSOR, mantém a flag coordenador
         if (usuario instanceof Professor professor) {
@@ -57,7 +57,7 @@ public class UsuarioService {
         Usuario usuario = findById(id);
 
         usuario.setNome(dadosNovos.getNome());
-        usuario.setUsername(dadosNovos.getUsername());
+        usuario.setEmail(dadosNovos.getUsername());
         usuario.setTelefone(dadosNovos.getTelefone());
         usuario.setRole(dadosNovos.getRole());
 
@@ -65,8 +65,8 @@ public class UsuarioService {
             professor.setCoordenador(novoProfessor.isCoordenador());
         }
 
-        if (dadosNovos.getPassword() != null && !dadosNovos.getPassword().isBlank()) {
-            usuario.setPassword(passwordEncoder.encode(dadosNovos.getPassword()));
+        if (dadosNovos.getSenha() != null && !dadosNovos.getSenha().isBlank()) {
+            usuario.setSenha(passwordEncoder.encode(dadosNovos.getSenha()));
         }
 
         return usuarioRepository.save(usuario);
@@ -80,11 +80,21 @@ public class UsuarioService {
 
 
     public boolean existsByEmail(String email) {
-        return usuarioRepository.existsByUsername(email);
+        return usuarioRepository.existsByEmail(email);
     }
 
     public boolean existsByEmailAndIdNot(String email, Long excludeId) {
-        return usuarioRepository.existsByUsernameAndIdNot(email, excludeId);
+        return usuarioRepository.existsByEmailAndIdNot(email, excludeId);
+    }
+
+    public List<Professor> findProfessoresByIds(List<Long> ids) {
+        List<Role> roles = List.of(Role.PROFESSOR, Role.COORDENADOR);
+        
+        return usuarioRepository.findByIdInAndRoleIn(ids, roles)
+            .stream()
+            .filter(u -> u instanceof Professor)
+            .map(u -> (Professor) u)
+            .toList();
     }
 }
 

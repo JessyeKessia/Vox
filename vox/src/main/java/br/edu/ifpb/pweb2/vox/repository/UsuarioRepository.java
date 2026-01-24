@@ -12,11 +12,14 @@ import br.edu.ifpb.pweb2.vox.enums.Role;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    Usuario findByUsername(String email);
+    Usuario findByEmail(String email);
 
-    boolean existsByUsername(String email);
+    boolean existsByEmail(String email);
 
-    boolean existsByUsernameAndIdNot(String email, Long id);
+    boolean existsByEmailAndIdNot(String email, Long id);
 
     List<Usuario> findByRole(Role role);
+
+    // pega só usuários com papel PROFESSOR ou COORDENADOR pelos IDs
+    List<Usuario> findByIdInAndRoleIn(List<Long> ids, List<Role> roles);
 }

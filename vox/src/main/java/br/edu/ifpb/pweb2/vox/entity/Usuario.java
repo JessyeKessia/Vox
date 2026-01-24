@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 
 import java.time.LocalDate;
@@ -28,19 +29,22 @@ public class Usuario implements UserDetails {
 
     @Column(unique = true)
     private String matricula;
-
+    
+    @NotBlank(message = "Campo Obrigatório")
     private String nome;
-  
+    
+    @NotBlank(message = "Campo Obrigatório")
     private String telefone;
     
     @Email(message = "Insira um Email válido")
     @Column(unique = true, nullable = false)
-    private String username;
+    private String email;
 
     @NotBlank(message = "Campo Obrigatório")
     @Column(nullable = false)
-    private String password;
+    private String senha;
 
+    @NotNull(message = "Campo Obrigatório")
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -51,12 +55,12 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return senha;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override public boolean isAccountNonExpired() { return true; }

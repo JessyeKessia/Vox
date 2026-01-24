@@ -49,26 +49,27 @@
 
               <!-- Email -->
               <div class="col-md-6">
-                <label for="username" class="form-label small text-uppercase text-black">E-mail</label>
-                <input type="text" id="email" th:field="*{username}" class="form-control" required/>
-                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-black small mt-1"></p>
+                <label for="email" class="form-label small text-uppercase text-black">E-mail</label>
+                <input type="text" id="email" th:field="*{email}" class="form-control"/>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-black small mt-1"></p>
               </div>
 
               <!-- Senha -->
               <div class="col-md-6">
-                <label for="password" class="form-label small text-uppercase text-black">Senha</label>
-                <input type="password" id="senha" th:field="*{password}" class="form-control"
+                <label for="senha" class="form-label small text-uppercase text-black">Senha</label>
+                <input type="password" id="senha" th:field="*{senha}" class="form-control"
                        th:required="${usuario.id == null}"/>
-                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-black small mt-1"></p>
+                <p th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-black small mt-1"></p>
               </div>
 
               <!-- Role -->
               <div class="col-md-6">
                 <label for="role" class="form-label small text-uppercase text-black">Tipo de Usuário</label>
-                <select id="role" th:field="*{role}" class="form-select" required>
+                <select id="role" th:field="*{role}" class="form-select">
                   <option value="">-- Selecione --</option>
                   <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
                 </select>
+                <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-black small mt-1"></p>
               </div>
 
               <!-- Coordenador (só professor) -->

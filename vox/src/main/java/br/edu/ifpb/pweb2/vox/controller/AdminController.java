@@ -1,6 +1,8 @@
 package br.edu.ifpb.pweb2.vox.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.entity.Colegiado;
+import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
@@ -37,6 +40,11 @@ public class AdminController {
 
     @Autowired
     private AssuntoService assuntoService;
+
+    @ModelAttribute("roles")
+    public Role[] listarRoles() {
+        return Role.values();
+    }
     
     
     @GetMapping("/home")
@@ -58,39 +66,62 @@ public class AdminController {
         ModelAndView mv = new ModelAndView("admin/usuarios/form");
 
         mv.addObject("usuario", new Usuario ());
-        mv.addObject("roles", Role.values());
-
         return mv;
     }
     
     @PostMapping("/usuarios/save")
     public ModelAndView salvarUsuario(@Valid @ModelAttribute("usuario") Usuario usuario,
-            BindingResult br) {
+            BindingResult result) {
 
-        if (br.hasErrors()) {
-            ModelAndView mv = new ModelAndView("admin/usuarios/form");
-            mv.addObject("roles", Role.values());
+        ModelAndView mv = new ModelAndView("admin/usuarios/form");
+
+        // Erros de validação do Bean Validation
+        if (result.hasErrors()) {
             return mv;
         }
 
+        // Regra de negócio: email duplicado
+        if (usuarioService.existsByEmail(usuario.getEmail())) {
+            result.rejectValue(
+                "email",
+                "email.duplicado",
+                "Já existe um usuário com esse email"
+            );
+            return mv;
+        }
+
+        // Salva
         usuarioService.save(usuario);
         return new ModelAndView("redirect:/admin/usuarios");
     }
 
-    @PostMapping("/usuarios/edit/{id}")
+    @GetMapping("/usuarios/edit/{id}")
     public ModelAndView atualizarUsuario(
             @PathVariable Long id,
             @Valid @ModelAttribute("usuario") Usuario usuario,
-            BindingResult br) {
+            BindingResult result) {
 
-        if (br.hasErrors()) {
             ModelAndView mv = new ModelAndView("admin/usuarios/form");
-            mv.addObject("roles", Role.values());
-            return mv;
-        }
 
-        usuarioService.edit(id, usuario);
-        return new ModelAndView("redirect:/admin/usuarios");
+            // Erros de validação do Bean Validation
+            if (result.hasErrors()) {
+                return mv;
+            }
+
+            // Regra de negócio: email duplicado
+            if (usuarioService.existsByEmail(usuario.getEmail())) {
+                result.rejectValue(
+                    "email",
+                    "email.duplicado",
+                    "Já existe um usuário com esse email"
+                );
+                return mv;
+            }
+
+            // Salava o que foi editado
+            usuarioService.edit(id, usuario);
+            return new ModelAndView("redirect:/admin/usuarios");
+
     }
 
     @GetMapping("/usuarios/delete/{id}")
@@ -131,11 +162,10 @@ public class AdminController {
 
     @PostMapping("/colegiados/save")
     public ModelAndView salvarColegiado(
-            @Valid @ModelAttribute("colegiado") Colegiado colegiado,
-            @RequestParam(value = "membrosIds", required = false) List<Long> membrosIds,
-            BindingResult br) {
+            @Valid @ModelAttribute("colegiado") Colegiado colegiado, BindingResult result,
+            @RequestParam(value = "membrosIds", required = false) List<Long> membrosIds) {
 
-        if (br.hasErrors()) {
+        if (result.hasErrors()) {
             ModelAndView mv = new ModelAndView("admin/colegiados/form");
             mv.addObject("colegiado", colegiado);
             mv.addObject(

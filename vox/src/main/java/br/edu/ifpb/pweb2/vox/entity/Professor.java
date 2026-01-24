@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -19,6 +20,7 @@ public class Professor extends Usuario {
 
     private boolean coordenador;
 
+    @NotNull(message="Escolha pelo menos 1 professor!")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "professor_colegiado",

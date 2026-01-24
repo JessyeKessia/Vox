@@ -34,12 +34,13 @@ public class VoxSecutiryConfig {
                 .defaultSuccessUrl("/admin/home", true)
                 .permitAll()
             )
-            .logout( (logout) -> 
-                logout.logoutUrl("/auth/logout")
-                // logout.logoutSuccessUrl("/auth/login");
-                // logout.invalidateHttpSession(true);
-                // logout.clearAuthentication(true);
-                // logout.deleteCookies("JSESSIONID");
+            .logout( logout -> logout
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/auth/login?logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
             );
         return http.build();
     }

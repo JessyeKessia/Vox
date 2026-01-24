@@ -41,6 +41,7 @@ public class Colegiado {
     @NotBlank(message = "Campo obrigatório!")
     private String curso;
 
+    @NotNull(message = "Campo obrigatório!")
     @ManyToMany(mappedBy = "colegiados", fetch = FetchType.EAGER)
     private Set<Professor> membros = new HashSet<>();
 }

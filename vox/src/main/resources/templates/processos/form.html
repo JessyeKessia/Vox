@@ -13,33 +13,21 @@
         <div class="cards-form card border-0 shadow-sm">
           <div class="card-body">
             <div class="mb-3">
-              <h1 class="text-white h4 mb-1">Vox - Cadastro de Processo</h1>
+              <h1 class="text-white h4 mb-1">Processos</h1>
               <p class="text-white small mb-0">
                 Preencha os campos abaixo para registrar um novo processo no
                 sistema.
               </p>
             </div>
 
-            <form
-              th:action="@{/processos}"
-              th:object="${processo}"
-              method="post"
-              class="row g-3"
-            >
+            <form th:action="@{/processos}" th:object="${processo}" method="post" class="row g-3">
               <input type="hidden" th:field="*{id}" />
 
               <div class="col-md-6">
-                <label
-                  for="assunto"
-                  class="form-label small text-uppercase text-white"
-                >
+                <label for="assunto" class="form-label small text-uppercase text-white">
                   Assunto
                 </label>
-                <select
-                  id="assunto"
-                  th:field="*{assunto.id}"
-                  class="form-select"
-                >
+                <select id="assunto" th:field="*{assunto.id}" class="form-select">
                   <option value="">Selecione um assunto...</option>
                   <option
                     th:each="ass : ${assuntosItens}"
