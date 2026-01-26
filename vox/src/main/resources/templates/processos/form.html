@@ -1,64 +1,67 @@
 <!DOCTYPE html>
-<html
-  lang="pt_BR"
-  xmlns:th="http://www.thymeleaf.org"
-  th:replace="~{layout/base :: base(content=~{::section}, title='Cadastro de Processo')}"
->
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Cadastro de processos'">
+
   <body>
-    <section class="py-4">
+    <section layout:fragment="content" class="py-4">
       <div class="container-fluid">
-        <div th:replace="~{fragments/menu :: message-success}"></div>
 
         <!-- Card de cadastro -->
         <div class="cards-form card border-0 shadow-sm">
           <div class="card-body">
             <div class="mb-3">
-              <h1 class="text-white h4 mb-1">Processos</h1>
-              <p class="text-white small mb-0">
+              <h1 class="text-black h4 mb-1">Processos</h1>
+              <p class="text-black small mb-0">
                 Preencha os campos abaixo para registrar um novo processo no
                 sistema.
               </p>
             </div>
 
-            <form th:action="@{/processos}" th:object="${processo}" method="post" class="row g-3">
+            <form th:action="@{/processos}" th:object="${processo}" method="post" enctype="multipart/form-data" class="row g-3">
               <input type="hidden" th:field="*{id}" />
+    
 
               <div class="col-md-6">
-                <label for="assunto" class="form-label small text-uppercase text-white">
+                <label for="assunto" class="form-label small text-uppercase text-black">
                   Assunto
                 </label>
                 <select id="assunto" th:field="*{assunto.id}" class="form-select">
                   <option value="">Selecione um assunto...</option>
-                  <option
-                    th:each="ass : ${assuntosItens}"
-                    th:value="${ass.id}"
-                    th:text="${ass.nome}"
+                  <option th:each="ass : ${assuntosItens}" th:value="${ass.id}" th:text="${ass.nome}"
                   ></option>
                 </select>
-                <p th:if="${#fields.hasErrors('assunto')}" th:errors="*{assunto}" class="text-white small mt-1"></p>
+                <p th:if="${#fields.hasErrors('assunto')}" th:errors="*{assunto}" class="text-black small mt-1"></p>
               </div>
 
               <div class="col-12">
-                <label
-                  for="requerimento"
-                  class="form-label small text-uppercase text-white"
-                >
-                  Requerimento
+                <label for="descricao" class="form-label small text-uppercase text-black">
+                  Descrição do Requerimento
                 </label>
-                <textarea
-                  id="requerimento"
-                  th:field="*{descricao}"
-                  rows="6"
-                  class="form-control"
-                  placeholder="Digite aqui a descrição do seu requerimento..."
-                ></textarea>
-                <small class="text-white">
+                <textarea id="descricao" th:field="*{descricao}" rows="6" class="form-control" placeholder="Digite aqui a descrição do seu requerimento..."></textarea>
+                <small class="text-black">
                   Descreva de forma clara o pedido, incluindo os principais
                   detalhes necessários para análise.
                 </small>
-                <p th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-white small mt-1"></p>
+                <p th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-black small mt-1"></p>
               </div>
+              <div class="col-12">
+                <label for="requerimentoArquivo" class="form-label small text-uppercase text-black">
+                  Arquivo (PDF)
+                </label>
 
+                <input type="file"
+                      id="requerimentoArquivo"
+                      th:field="*{requerimentoArquivo}"
+                      accept="application/pdf"
+                      class="form-control"/>
+
+                <small class="text-black">
+                  Envie o arquivo PDF do requerimento. Tamanho máximo recomendado: 10MB.
+                </small>
+              </div> 
               <div class="col-12 mt-3 d-flex justify-content-end gap-2">
                 <a th:href="@{/processos}" class="btn btn-light border">
                   Cancelar

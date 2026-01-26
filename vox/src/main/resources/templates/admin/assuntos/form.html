@@ -21,7 +21,7 @@
               <div class="col-md-6">
                 <label for="nome" class="form-label small text-uppercase text-black"> Nome do assunto</label>
                 <input type="text" id="nome" th:field="*{nome}" class="form-control"/>
-                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-white small mt-1"></p>
+                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-black small mt-1"></p>
               </div>
 
               <div class="col-12 mt-3 d-flex justify-content-end gap-2">

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
 import br.edu.ifpb.pweb2.vox.entity.Colegiado;
-import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.service.AssuntoService;
@@ -44,14 +42,6 @@ public class AdminController {
     @ModelAttribute("roles")
     public Role[] listarRoles() {
         return Role.values();
-    }
-    
-    
-    @GetMapping("/home")
-    public ModelAndView home(@AuthenticationPrincipal Usuario usuarioLogado) {
-        ModelAndView mv = new ModelAndView("home/index");
-        mv.addObject("usuarioLogado", usuarioLogado);
-        return mv;
     }
     
     @GetMapping("/usuarios")
@@ -126,7 +116,7 @@ public class AdminController {
 
     @GetMapping("/usuarios/delete/{id}")
     public ModelAndView excluirUsuario(@PathVariable Long id) {
-        usuarioService.delete(id);
+        usuarioService.deleteById(id);
         return new ModelAndView("redirect:/admin/usuarios");
     }
 
@@ -141,6 +131,7 @@ public class AdminController {
         return mv;
     }
 
+    // discutir se somente professor pode ser parte do colegiado ou coordendor tbm
     @GetMapping("/colegiados/form")
     public ModelAndView novoColegiado() {
         ModelAndView mv = new ModelAndView("admin/colegiados/form");
@@ -151,8 +142,7 @@ public class AdminController {
             "professores",
             usuarioService.findAll().stream()
                 .filter(u ->
-                    u.getRole() == Role.PROFESSOR ||
-                    u.getRole() == Role.COORDENADOR
+                    u.getRole() == Role.PROFESSOR 
                 )
                 .toList()
         );
@@ -172,15 +162,28 @@ public class AdminController {
                 "professores",
                 usuarioService.findAll().stream()
                     .filter(u ->
-                        u.getRole() == Role.PROFESSOR ||
-                        u.getRole() == Role.COORDENADOR
+                        u.getRole() == Role.PROFESSOR
                     )
                     .toList()
             );
             return mv;
         }
+        if (membrosIds != null) {
 
-        colegiadoService.save(colegiado, membrosIds);
+            Set<Usuario> membros = new HashSet<>(usuarioService.findUsuariosByIdIn(membrosIds));
+
+            // (opcional mas recomendado) garante que só PROFESSORES entrem
+            membros.removeIf(u -> u.getRole() != Role.PROFESSOR);
+
+            colegiado.setMembros(membros);
+
+            // Mantém a relação bidirecional
+            for (Usuario usuario : membros) {
+                usuario.getColegiados().add(colegiado);
+            }
+        }
+
+        colegiadoService.save(colegiado);
         return new ModelAndView("redirect:/admin/colegiados");
     }
 
@@ -195,8 +198,7 @@ public class AdminController {
             "professores",
             usuarioService.findAll().stream()
                 .filter(u ->
-                    u.getRole() == Role.PROFESSOR ||
-                    u.getRole() == Role.COORDENADOR
+                    u.getRole() == Role.PROFESSOR 
                 )
                 .toList()
         );

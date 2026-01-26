@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.edu.ifpb.pweb2.vox.entity.Professor;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.repository.UsuarioRepository;
@@ -36,24 +35,22 @@ public class UsuarioService {
 
     @Transactional
     public Usuario save(Usuario usuario) {
-        usuario.setSenha(passwordEncoder.encode(usuario.getPassword()));
-
-        // Se for PROFESSOR, mantém a flag coordenador
-        if (usuario instanceof Professor professor) {
-            professor.setCoordenador(professor.isCoordenador());
-        }
-
-        // Se NÃO for professor, garante que não é coordenador
-        if (!(usuario instanceof Professor)) {
-            // nada pra fazer
+        
+        // Só re-encode se a senha ainda não estiver criptografada
+        if (usuario.getId() == null || !usuario.getSenha().startsWith("$2")) {
+            usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         }
 
         return usuarioRepository.save(usuario);
     }
 
+    public List<Usuario> findByRole(Role role) {
+        return usuarioRepository.findByRole(role);
+    }
+    
+
     @Transactional
     public Usuario edit(Long id, Usuario dadosNovos) {
-
         Usuario usuario = findById(id);
 
         usuario.setNome(dadosNovos.getNome());
@@ -61,10 +58,7 @@ public class UsuarioService {
         usuario.setTelefone(dadosNovos.getTelefone());
         usuario.setRole(dadosNovos.getRole());
 
-        if (usuario instanceof Professor professor && dadosNovos instanceof Professor novoProfessor) {
-            professor.setCoordenador(novoProfessor.isCoordenador());
-        }
-
+        // 🔐 Só atualiza a senha se o campo vier preenchido
         if (dadosNovos.getSenha() != null && !dadosNovos.getSenha().isBlank()) {
             usuario.setSenha(passwordEncoder.encode(dadosNovos.getSenha()));
         }
@@ -74,7 +68,7 @@ public class UsuarioService {
 
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         usuarioRepository.deleteById(id);
     }
 
@@ -87,14 +81,19 @@ public class UsuarioService {
         return usuarioRepository.existsByEmailAndIdNot(email, excludeId);
     }
 
-    public List<Professor> findProfessoresByIds(List<Long> ids) {
-        List<Role> roles = List.of(Role.PROFESSOR, Role.COORDENADOR);
-        
-        return usuarioRepository.findByIdInAndRoleIn(ids, roles)
-            .stream()
-            .filter(u -> u instanceof Professor)
-            .map(u -> (Professor) u)
-            .toList();
+    public List<Usuario> findProfUsuarios(List<Long> ids) {
+        List<Role> roles = List.of(Role.PROFESSOR);
+        return usuarioRepository.findByIdInAndRoleIn(ids, roles);
     }
+
+    public List<Usuario> findCordenUsuarios(List<Long> ids) {
+        List<Role> roles = List.of(Role.COORDENADOR);
+        return usuarioRepository.findByIdInAndRoleIn(ids, roles);
+    }
+
+    public List<Usuario> findUsuariosByIdIn(List<Long> ids) {
+        return usuarioRepository.findUsuariosByIdIn(ids);
+    }
+
 }
 

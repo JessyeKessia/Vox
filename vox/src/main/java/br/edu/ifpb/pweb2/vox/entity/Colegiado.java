@@ -42,6 +42,12 @@ public class Colegiado {
     private String curso;
 
     @NotNull(message = "Campo obrigatório!")
-    @ManyToMany(mappedBy = "colegiados", fetch = FetchType.EAGER)
-    private Set<Professor> membros = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+    name = "colegiado_professor",
+    joinColumns = @JoinColumn(name = "colegiado_id"),
+    inverseJoinColumns = @JoinColumn(name = "professor_id"))
+    private Set<Usuario> membros = new HashSet<>();
+    
 }

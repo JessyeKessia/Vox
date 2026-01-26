@@ -13,7 +13,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
@@ -30,23 +32,28 @@ public class Usuario implements UserDetails {
     @Column(unique = true)
     private String matricula;
     
-    @NotBlank(message = "Campo Obrigatório")
+    @NotBlank(message = "Campo obrigatório")
     private String nome;
     
-    @NotBlank(message = "Campo Obrigatório")
+    @NotBlank(message = "Campo obrigatório")
     private String telefone;
     
-    @Email(message = "Insira um Email válido")
+    @Email(message = "Insira um email válido")
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank(message = "Campo Obrigatório")
+    @NotBlank(message = "Campo obrigatório")
     @Column(nullable = false)
     private String senha;
 
-    @NotNull(message = "Campo Obrigatório")
+    @NotNull(message = "Campo obrigatório")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToMany(mappedBy = "membros", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Colegiado> colegiados = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

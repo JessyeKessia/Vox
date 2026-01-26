@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.edu.ifpb.pweb2.vox.entity.Processo;
-import br.edu.ifpb.pweb2.vox.entity.Professor;
+import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 import br.edu.ifpb.pweb2.vox.repository.ProcessoRepository;
 
@@ -42,7 +42,7 @@ public class ProcessoService {
         return processoRepository.findForCoordenador(status, alunoInteressadoId, relatorId);
     }
 
-    public List<Processo> findByProfessor(Professor professor) {
+    public List<Processo> findByProfessor(Usuario professor) {
         return processoRepository.findByRelatorId(professor.getId());
     }
 }

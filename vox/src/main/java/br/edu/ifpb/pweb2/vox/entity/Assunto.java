@@ -6,7 +6,6 @@ import java.io.Serializable;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 
@@ -23,7 +22,6 @@ public class Assunto implements Serializable {
 
     @Column(length = 255)
     @NotBlank(message = "Campo obrigatório!")
-    @Size(min= 50, max= 60)
     private String nome;
 
     @OneToMany(mappedBy = "assunto")

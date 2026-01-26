@@ -37,21 +37,21 @@
               <div class="col-md-6">
                 <label for="nome" class="form-label small text-uppercase text-black">Nome</label>
                 <input type="text" id="nome" th:field="*{nome}" class="form-control"/>
-                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-black small mt-1"></p>
+                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger small mt-1"></p>
               </div>
 
               <!-- Telefone -->
               <div class="col-md-6">
                 <label for="telefone" class="form-label small text-uppercase text-black">Telefone</label>
                 <input type="text" id="telefone" th:field="*{telefone}" class="form-control"/>
-                <p th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="text-black small mt-1"></p>
+                <p th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="text-danger small mt-1"></p>
               </div>
 
               <!-- Email -->
               <div class="col-md-6">
                 <label for="email" class="form-label small text-uppercase text-black">E-mail</label>
                 <input type="text" id="email" th:field="*{email}" class="form-control"/>
-                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-black small mt-1"></p>
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger small mt-1"></p>
               </div>
 
               <!-- Senha -->
@@ -59,7 +59,7 @@
                 <label for="senha" class="form-label small text-uppercase text-black">Senha</label>
                 <input type="password" id="senha" th:field="*{senha}" class="form-control"
                        th:required="${usuario.id == null}"/>
-                <p th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-black small mt-1"></p>
+                <p th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-danger small mt-1"></p>
               </div>
 
               <!-- Role -->
@@ -69,15 +69,7 @@
                   <option value="">-- Selecione --</option>
                   <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
                 </select>
-                <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-black small mt-1"></p>
-              </div>
-
-              <!-- Coordenador (só professor) -->
-              <div class="col-12" th:if="${usuario instanceof T(br.edu.ifpb.pweb2.vox.entity.Professor)}">
-                <div class="form-check mt-2">
-                  <input type="checkbox" id="coordenador" th:field="*{coordenador}" class="form-check-input"/>
-                  <label for="coordenador" class="form-check-label text-black">Coordenador</label>
-                </div>
+                <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-danger small mt-1"></p>
               </div>
 
               <!-- Botões -->

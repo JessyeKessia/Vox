@@ -9,7 +9,7 @@
       <div class="container-fluid px-4">
 
         <!-- Marca -->
-        <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/admin/home}">
+        <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/home}">
           <img th:src="@{/imagens/logo-ofic.png}" width="100" alt="VOX Logo" class="me-2"/>
 
           <div class="d-flex flex-column">
@@ -52,10 +52,11 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link px-3" th:href="@{/processos/}" sec:authorize="hasRole('ALUNO')">
+              <a class="nav-link px-3" th:href="@{/processos}" sec:authorize="hasRole('ALUNO')">
                 Meus processos
               </a>
             </li>
+            
 
             <!-- Dropdown usuário -->
             <li class="nav-item dropdown ms-lg-3"
@@ -67,7 +68,7 @@
                  data-bs-toggle="dropdown">
 
                 <i class="bi bi-person-circle fs-5"></i>
-                <span sec:authentication="principal.nome">Usuário</span>
+                <span sec:authentication="principal.username">Usuário</span>
               </a>
 
               <ul class="dropdown-menu dropdown-menu-end shadow">

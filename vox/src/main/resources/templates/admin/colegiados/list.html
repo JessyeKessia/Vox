@@ -47,42 +47,51 @@
                     <td th:text="${#temporals.format(c.dataFim, 'dd/MM/yyyy')}"></td>
                     <td>
                       <div th:if="${c.membros != null and !c.membros.isEmpty()}">
+
                         <!-- Mostra até 2 membros diretamente -->
-                        <span th:each="m, iterStat : ${c.membros}" th:text="${m.nome}"
-                              th:if="${iterStat.index < 2}" 
+                        <span th:each="m, iterStat : ${c.membros}"
+                              th:if="${iterStat.index lt 2}"
+                              th:text="${m.nome}"
                               class="badge bg-secondary-subtle text-secondary me-1 mb-1">
                         </span>
 
                         <!-- Se tiver mais membros, mostra botão para expandir -->
                         <span th:if="${c.membros.size() > 2}">
-                          <a class="btn btn-sm btn-outline-secondary p-0 ms-1" 
-                            data-bs-toggle="collapse" 
-                            th:href="'#collapseMembros' + ${c.id}" 
-                            role="button" aria-expanded="false" aria-controls="collapseMembros">
-                            +<span th:text="${c.membros.size() - 2}"></span> mais
+                          <a class="btn btn-sm btn-outline-secondary px-2 p-0 ms-1"
+                            data-bs-toggle="collapse"
+                            th:href="'#collapseMembros' + ${c.id}"
+                            role="button"
+                            aria-expanded="false"
+                            th:attr="aria-controls='collapseMembros' + ${c.id}">
+                            +<span th:text="${c.membros.size() - 2}"></span> mais 
                           </a>
                         </span>
 
                         <!-- Collapse com os membros restantes -->
                         <div th:id="'collapseMembros' + ${c.id}" class="collapse mt-1">
-                          <span th:each="m, iterStat : ${c.membros}" th:if="${iterStat.index >= 2}" 
-                                th:text="${m.nome}" 
+                          <span th:each="m, iterStat : ${c.membros}"
+                                th:if="${iterStat.index ge 2}"
+                                th:text="${m.nome}"
                                 class="badge bg-secondary-subtle text-secondary me-1 mb-1">
                           </span>
                         </div>
+
                       </div>
 
-                      <span th:if="${c.membros == null or c.membros.isEmpty()}" class="text-muted small"> Nenhum membro </span>
+                      <span th:if="${c.membros == null or c.membros.isEmpty()}"
+                            class="text-muted small">
+                        Nenhum membro
+                      </span>
                     </td>
                     <td class="text-end">
-                      <button th:href="@{/admin/colegiados/edit/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary me-1">
+                      <a th:href="@{/admin/colegiados/edit/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary me-1">
                         <i class="bi bi-pencil-square me-1"></i>
                         Editar
-                      </button>
-                      <button th:href="@{/admin/colegiados/delete/{id}(id=${c.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza?');">
+                      </a>
+                      <a th:href="@{/admin/colegiados/delete/{id}(id=${c.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza?');">
                         <i class="bi bi-trash me-1"></i>
                         Remover
-                      </button>
+                      </a>
                     </td>
                   </tr>
                   <tr th:if="${colegiados.size() == 0}">

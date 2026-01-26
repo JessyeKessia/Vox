@@ -21,6 +21,7 @@ public interface ProcessoRepository extends JpaRepository<Processo, Long> {
        WHERE (:status IS NULL OR p.status = :status)
        AND (:assunto IS NULL OR p.assunto.nome = :assunto)
        AND (:alunoInteressadoId IS NULL OR p.alunoInteressado.id = :alunoInteressadoId)
+       ORDER BY p.dataCriacao DESC
        """)
     List<Processo> findByStatusAndAssuntoAndAlunoInteressadoId(
         @Param("status") StatusProcesso status,

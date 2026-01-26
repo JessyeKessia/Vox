@@ -26,12 +26,13 @@ public class VoxSecutiryConfig {
             .authorizeHttpRequests( auth -> auth
                 .requestMatchers("/css/**", "/imagens/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/processos/**").hasRole("ALUNO")
                 .anyRequest().authenticated()
                 
             )
             .formLogin( form -> form
                 .loginPage("/auth/login")
-                .defaultSuccessUrl("/admin/home", true)
+                .defaultSuccessUrl("/home", true)
                 .permitAll()
             )
             .logout( logout -> logout

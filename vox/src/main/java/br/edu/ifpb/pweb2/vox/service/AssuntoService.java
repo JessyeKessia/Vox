@@ -18,7 +18,6 @@ public class AssuntoService {
         return assuntoRepository.findAll();
     }
 
-    
     public Assunto findById(Long id) {
         return assuntoRepository.findById(id).orElse(null);
     }

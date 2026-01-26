@@ -37,7 +37,7 @@ public class Processo implements Serializable {
     @ManyToOne
     // não pode iniciar vazio aqui!!!!! TEM QUE TER O NOME DO AUTOR DO PROCESSO!!
     @JoinColumn(name = "aluno_interessado_id", nullable = false)
-    private Aluno alunoInteressado; // aluno autor do processo
+    private Usuario alunoInteressado; // aluno autor do processo
     
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao = LocalDate.now();
@@ -56,21 +56,29 @@ public class Processo implements Serializable {
     @Enumerated(EnumType.STRING)
     private StatusProcesso status = StatusProcesso.CRIADO;
 
-    @Lob
+    @ToString.Exclude
+    @Column(name = "parecer", columnDefinition = "bytea")
     private byte[] parecer;
+
+    @ToString.Exclude
+    @Column(name = "requerimento_arquivo", columnDefinition = "bytea")
+    private byte[] requerimentoArquivo;
 
     @Enumerated(EnumType.STRING)
     private TipoDecisao decisaoRelator;
 
     @ManyToOne
     @JoinColumn(name = "professor_relator_id")
-    private Professor relator; // professor designado como relator
+    private Usuario relator; // professor designado como relator
 
     @PrePersist
     public void gerarNumero() {
         if (this.numero == null || this.numero.isEmpty()) {
             this.numero = UUID.randomUUID().toString().substring(0, 10).toUpperCase();
         }
+    }
+    public boolean podeAnexarRequerimento() {
+        return this.status == StatusProcesso.CRIADO;
     }
 }
 

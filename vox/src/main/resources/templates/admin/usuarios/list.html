@@ -31,7 +31,6 @@
                   <tr>
                     <th class="text-nowrap">Nome</th>
                     <th class="text-nowrap">E-mail</th>
-                    <th class="text-nowrap">Senha</th>
                     <th class="text-nowrap">Telefone</th>
                     <th class="text-nowrap">Matricula</th>
                     <th class="text-nowrap">Perfil</th>
@@ -42,7 +41,6 @@
                   <tr th:each="usuario : ${usuarios}">
                     <td class="fw-semibold" th:text="${usuario.nome}">-</td>
                     <td class="fw-semibold" th:text="${usuario.email}">-</td>
-                    <td class="fw-semibold" th:text="${usuario.senha}">-</td>
                     <td class="fw-semibold" th:text="${usuario.telefone}">-</td>
                     <td class="fw-semibold" th:text="${usuario.matricula}">-</td>
                     <td class="fw-semibold" th:text="${usuario.role}">-</td>
