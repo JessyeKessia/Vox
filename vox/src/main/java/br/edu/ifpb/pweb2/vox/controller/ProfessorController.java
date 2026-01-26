@@ -22,7 +22,6 @@ import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 import br.edu.ifpb.pweb2.vox.enums.TipoDecisao;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
 import br.edu.ifpb.pweb2.vox.service.VotoService;
-import groovy.lang.Binding;
 
 @Controller
 @RequestMapping("/professores")
@@ -33,6 +32,11 @@ public class ProfessorController {
 
     @Autowired
     private VotoService votoService;
+
+    @ModelAttribute("decisaoItens")
+    public TipoDecisao[] getDecisao() {
+        return TipoDecisao.values();
+    }
 
     @GetMapping
     public ModelAndView listarProcessos(@AuthenticationPrincipal Usuario usuarioLogado) {
@@ -53,34 +57,29 @@ public class ProfessorController {
 
     @PostMapping("/decisao/{id}")
     public ModelAndView salvarDecisao(@PathVariable Long id,  @ModelAttribute Processo processo,
+        BindingResult result,
         @AuthenticationPrincipal Usuario usuarioLogado, ModelAndView model,
         RedirectAttributes redirectAttributes) {
         
-        try {
-            System.out.println("Parecer recebido: " + processo.getParecerTexto());
-            System.out.println("Decisão recebida: " + processo.getDecisaoRelator());
-            Processo processoExistente = processoService.findById(id);
-            
-            if (processoExistente == null) {
-                redirectAttributes.addFlashAttribute("erro", 
-                "Processo não encontrado!");
-                model.setViewName("redirect:/professores");
-                return model;
-            }
-
-            processoExistente.setDecisaoRelator(processo.getDecisaoRelator());
-            processoExistente.setParecerTexto(processo.getParecerTexto());
-            processoExistente.setDataParecer(LocalDate.now());
-            processoExistente.setStatus(StatusProcesso.DISPONIVEL);
-            processoService.save(processoExistente);
-            redirectAttributes.addFlashAttribute("sucesso", "Decisão registrado com sucesso!");
-            model.setViewName("redirect:/professores");
-
-        } catch (Exception e) {
+        Processo processoExistente = processoService.findById(id);
+        
+        if (processoExistente == null) {
             redirectAttributes.addFlashAttribute("erro", 
-            "Erro ao registrar o decisão: " + e.getMessage());
+            "Processo não encontrado!");
             model.setViewName("redirect:/professores");
+            return model;
         }
+        if (result.hasErrors()) {
+
+        }
+        
+        processoExistente.setParecerTexto(processo.getParecerTexto().trim());
+        processoExistente.setDecisaoRelator(TipoDecisao.valueOf(processo.getDecisaoRelator().name()));
+        processoExistente.setDataParecer(LocalDate.now());
+        processoExistente.setStatus(StatusProcesso.DISPONIVEL);
+        processoService.save(processoExistente);
+        redirectAttributes.addFlashAttribute("sucesso", "Decisão registrado com sucesso!");
+        model.setViewName("redirect:/professores");
         
         return model;
     }

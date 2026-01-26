@@ -58,8 +58,8 @@
 
                     <td>
                       <span th:if="${processo.decisaoRelator == null}" class="badge bg-secondary">Pendente</span>
-                      <span th:if="${processo.decisaoRelator != null && processo.decisaoRelator.toString() == 'DEFERIDO'}" class="badge bg-success">Deferido</span>
-                      <span th:if="${processo.decisaoRelator != null && processo.decisaoRelator.toString() == 'INDEFERIDO'}" class="badge bg-danger">Indeferido</span>
+                      <span th:if="${processo.decisaoRelator != null and processo.decisaoRelator.name() == 'DEFERIDO'}" class="badge bg-success">Deferido</span>
+                      <span th:if="${processo.decisaoRelator != null and processo.decisaoRelator.name() == 'INDEFERIDO'}" class="badge bg-danger">Indeferido</span>
                     </td>
 
                     <td>

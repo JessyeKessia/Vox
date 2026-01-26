@@ -47,7 +47,6 @@
                       </span>
                     </p>
                   </div>
-
                   <div class="col-md-6">
                     <p class="mb-2">
                       <span class="text-muted small text-uppercase">Data de Criação</span><br>
@@ -117,26 +116,18 @@
             <form th:action="@{/professores/decisao/{id}(id=${processo.id})}"
                   method="post"
                   th:object="${processo}"
-                  class="row g-3">
+                  class="row g-3">    
 
               <div class="col-12">
-                <label for="decisaoRelator"
-                       class="form-label small text-uppercase text-dark">
+                <label for="decisaoRelator" class="form-label small text-uppercase text-dark">
                   Tipo da Decisão
                 </label>
-
-                <select id="decisaoRelator"
-                        name="decisaoRelator"
-                        th:field="*{decisaoRelator}"
-                        class="form-select"
-                        required>
-
+                <select id="decisaoRelator" th:field="*{decisaoRelator}" class="form-select">
                   <option value="">Selecione...</option>
-                  <option value="DEFERIDO">Deferido</option>
-                  <option value="INDEFERIDO">Indeferido</option>
-
+                  <option th:each="decisao : ${decisaoItens}" th:value="${decisao.name()}" th:text="${decisao}"
+                  ></option>
                 </select>
-                <p th:if="${#fields.hasErrors('decisaoRelator')}" th:errors="*{decisaoRelator}" class="text-danger small mt-1"></p>
+                <p th:if="${#fields.hasErrors('decisaoRelator')}" th:errors="*{decisaoRelator}" class="text-black small mt-1"></p>
               </div>
 
               <div class="col-12">
