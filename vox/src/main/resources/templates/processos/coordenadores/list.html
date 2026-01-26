@@ -1,64 +1,167 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: base(content=~{::section}, title='Processos Designados')}">
-  <head></head>
-  <body>
-    <section class="py-4">
-      <div class="container-fluid">
-        <div th:replace="~{fragments/menu :: message-success}"></div>
-        <div th:replace="~{fragments/menu :: message-error}"></div>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Lista de processos para distribuir'">
 
+  <body>
+    <section layout:fragment="content" class="py-4">
+      <div class="container-fluid">
+
+        <!-- Header -->
         <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
           <div>
-            <h1 class="h3 mb-1">Processos Designados</h1>
-            <p class="text-white mb-0 small">Processos que foram atribuídos a você.</p>
+            <h1 class="h3 mb-1">Processos</h1>
+            <p class="text-dark mb-0 small">
+              Visualize, filtre e distribua processos como coordenador.
+            </p>
           </div>
         </div>
 
+        <!-- Filtros -->
+        <div class="cards-form card border-0 shadow mb-4">
+          <div class="card-body">
+
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-2 d-flex align-items-center justify-content-center rounded-circle bg-light border"
+                   style="width: 32px; height: 32px">
+                <i class="bi bi-funnel text-secondary"></i>
+              </div>
+              <div>
+                <h2 class="text-secondary h6 mb-0">Filtros</h2>
+                <small class="text-muted">Refine a busca por status, aluno e relator.</small>
+              </div>
+            </div>
+
+            <form th:action="@{/coordenadores}" method="get" class="row g-3 align-items-end">
+
+              <div class="col-md-3">
+                <label for="status" class="form-label small text-uppercase text-dark">Status</label>
+                <select id="status" name="status" class="form-select">
+                  <option value="">Todos</option>
+                  <option th:each="s : ${statusItens}"
+                          th:value="${s.name()}"
+                          th:text="${s.name()}"
+                          th:selected="${s.name() == statusSelecionado}">
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="alunoInteressadoId" class="form-label small text-uppercase text-dark">Aluno</label>
+                <select id="alunoInteressadoId" name="alunoInteressadoId" class="form-select">
+                  <option value="">Todos</option>
+                  <option th:each="aluno : ${alunosItens}"
+                          th:value="${aluno.id}"
+                          th:text="${aluno.nome}"
+                          th:selected="${aluno.id == alunoSelecionado}">
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3">
+                <label for="relatorId" class="form-label small text-uppercase text-dark">Relator</label>
+                <select id="relatorId" name="relatorId" class="form-select">
+                  <option value="">Todos</option>
+                  <option th:each="prof : ${professoresItens}"
+                          th:value="${prof.id}"
+                          th:text="${prof.nome}"
+                          th:selected="${prof.id == professorSelecionado}">
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3 d-flex gap-2 justify-content-md-end">
+                <button type="submit"
+                        class="btn btn-outline-primary"
+                        style="
+                          color: #0d6efd;
+                          border-color: #0d6efd;
+                          --bs-btn-hover-color: #0d6efd;
+                          --bs-btn-hover-bg: rgba(13, 110, 253, 0.08);
+                          --bs-btn-hover-border-color: #0d6efd;">
+                  <i class="bi bi-search me-1"></i> Filtrar
+                </button>
+
+                <a th:href="@{/coordenadores}" class="btn btn-light border">
+                  Limpar
+                </a>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+        <!-- Tabela -->
         <div class="card border-0 shadow-sm">
           <div class="card-body p-0">
             <div class="table-responsive">
               <table class="table table-hover align-middle mb-0">
-                <thead class="table-dark">
+
+                <thead class="table-light">
                   <tr>
-                    <th>Assunto</th>
-                    <th>Status</th>
-                    <th>Autor</th>
-                    <th>Data de criação</th>
-                    <th>Data de atribuição</th>
-                    <th>Descrição</th>
+                    <th class="text-nowrap">Número</th>
+                    <th class="text-nowrap">Data de Criação</th>
+                    <th class="text-nowrap">Aluno interessado</th>
+                    <th class="text-nowrap">Status</th>
+                    <th class="text-nowrap">Professor Relator</th>
+                    <th class="text-end text-nowrap">Ações</th>
                   </tr>
                 </thead>
+
                 <tbody>
-                  <tr th:each="processo : ${processos}">
-                    <td th:text="${processo.assunto != null ? processo.assunto.nome : '—'}">—</td>
+                  <tr th:each="p : ${processos}">
+                    <td class="fw-semibold text-primary" th:text="${p.numero}">--</td>
+
+                    <td th:text="${#temporals.format(p.dataCriacao, 'dd/MM/yyyy')}">
+                      --/--/----
+                    </td>
+
+                    <td th:text="${p.alunoInteressado != null ? p.alunoInteressado.nome : '—'}">
+                      —
+                    </td>
 
                     <td>
                       <span class="badge rounded-pill"
-                            th:text="${processo.status}"
-                            th:classappend="${processo.status.name() == 'CRIADO' ? ' bg-secondary-subtle text-secondary'
-                              : processo.status.name() == 'DISTRIBUIDO' ? ' bg-primary-subtle text-primary'
-                              : processo.status.name() == 'DISPONIVEL' ? ' bg-success-subtle text-success'
-                              : processo.status.name() == 'EM_PAUTA' ? ' bg-warning-subtle text-warning'
-                              : processo.status.name() == 'JULGADO' ? ' bg-dark-subtle text-dark'
-                              : ' bg-secondary-subtle text-secondary'}">
+                            th:text="${p.status}"
+                            th:classappend="${p.status.name() == 'CRIADO' ? ' bg-secondary-subtle text-secondary'
+                            : p.status.name() == 'DISTRIBUIDO' ? ' bg-primary-subtle text-primary'
+                            : p.status.name() == 'DISPONIVEL' ? ' bg-success-subtle text-success'
+                            : p.status.name() == 'EM_PAUTA' ? ' bg-warning-subtle text-warning'
+                            : p.status.name() == 'JULGADO' ? ' bg-dark-subtle text-dark'
+                            : ' bg-secondary-subtle text-secondary'}">
                         --
                       </span>
                     </td>
 
-                    <td th:text="${processo.alunoInteressado != null ? processo.alunoInteressado.nome : '—'}">—</td>
+                    <td th:text="${p.relator != null ? p.relator.nome : '—'}">—</td>
 
-                    <td th:text="${processo.dataCriacao != null ? #temporals.format(processo.dataCriacao, 'dd/MM/yyyy') : '—'}">--/--/----</td>
+                    <td class="text-end">
+                      <a th:if="${p.status.name() == 'CRIADO'}"
+                        th:href="@{/coordenadores/distribuir/{id}(id=${p.id})}"
+                        class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-person-check me-1"></i> Distribuir
+                      </a>
 
-                    <td th:text="${processo.dataDistribuicao != null ? #temporals.format(processo.dataDistribuicao, 'dd/MM/yyyy') : '—'}">--/--/----</td>
-
-                    <td class="text-truncate" style="max-width: 360px" th:text="${processo.descricao}">—</td>
+                      <!-- Botão desabilitado quando o processo não está criado -->
+                      <a th:if="${p.status.name() != 'CRIADO'}"
+                        class="btn btn-sm btn-outline-primary disabled btn-secondary text-dark"
+                        style="border-color: #6c757d;"
+                        aria-disabled="true"
+                        tabindex="-1">
+                        <i class="bi bi-person-check me-1"></i> Distribuir
+                      </a>
+                    </td>
                   </tr>
 
                   <tr th:if="${processos == null or processos.size() == 0}">
-                    <td colspan="6" class="text-center py-4">Nenhum processo encontrado.</td>
+                    <td colspan="6" class="text-center py-4">
+                      Nenhum processo encontrado com os filtros atuais.
+                    </td>
                   </tr>
                 </tbody>
+
               </table>
             </div>
           </div>

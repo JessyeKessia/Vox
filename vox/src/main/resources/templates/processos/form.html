@@ -61,6 +61,7 @@
                 <small class="text-black">
                   Envie o arquivo PDF do requerimento. Tamanho máximo recomendado: 10MB.
                 </small>
+                <p th:if="${#fields.hasErrors('requerimentoArquivo')}" th:errors="*{requerimentoArquivo}" class="text-black small mt-1"></p>
               </div> 
               <div class="col-12 mt-3 d-flex justify-content-end gap-2">
                 <a th:href="@{/processos}" class="btn btn-light border">

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Votar no Processo'">
+  <body>
+    <section layout:fragment="content" class="py-4">
+      <div class="container-fluid">
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+
+            <!-- Cabeçalho -->
+            <div class="mb-3">
+              <h1 class="h4 mb-1 text-dark">Avalie o Processo</h1>
+              <p class="text-dark small mb-0">
+                Registre seu parecer sobre o processo selecionado.
+              </p>
+            </div>
+
+            <!-- Resumo do processo -->
+            <div class="mb-3">
+              <div class="p-3 rounded border bg-light">
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Processo</span><br>
+                      <span class="fw-semibold text-primary">
+                        #<span th:text="${processo.numero}">ABC1234</span>
+                      </span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Assunto</span><br>
+                      <span class="fw-semibold"
+                            th:text="${processo.assunto != null ? processo.assunto.nome : '—'}">
+                        Assunto aqui
+                      </span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Aluno interessado</span><br>
+                      <span class="fw-semibold"
+                            th:text="${processo.alunoInteressado != null ? processo.alunoInteressado.nome : '—'}">
+                        Nome do aluno
+                      </span>
+                    </p>
+                  </div>
+
+                  <div class="col-md-6">
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Data de Criação</span><br>
+                      <span class="fw-semibold"
+                            th:text="${processo.dataCriacao != null ? #temporals.format(processo.dataCriacao, 'dd/MM/yyyy') : '—'}">
+                        --/--/----
+                      </span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Data de Distribuição</span><br>
+                      <span class="fw-semibold"
+                            th:text="${processo.dataDistribuicao != null ? #temporals.format(processo.dataDistribuicao, 'dd/MM/yyyy') : '—'}">
+                        --/--/----
+                      </span>
+                    </p>
+
+                    <p class="mb-0">
+                      <span class="text-muted small text-uppercase">Status</span><br>
+                      <span class="badge rounded-pill"
+                            th:text="${processo.status}"
+                            th:classappend="${processo.status.name() == 'CRIADO' ? ' bg-secondary-subtle text-secondary'
+                              : processo.status.name() == 'DISTRIBUIDO' ? ' bg-primary-subtle text-primary'
+                              : processo.status.name() == 'DISPONIVEL' ? ' bg-success-subtle text-success'
+                              : processo.status.name() == 'EM_PAUTA' ? ' bg-warning-subtle text-warning'
+                              : processo.status.name() == 'JULGADO' ? ' bg-dark-subtle text-dark'
+                              : ' bg-secondary-subtle text-secondary'}">
+                        --
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <hr class="my-3">
+
+                <p class="mb-0">
+                  <span class="text-muted small text-uppercase">Descrição</span><br>
+                  <span th:text="${processo.descricao}">
+                    Descrição do processo
+                  </span>
+                </p>
+
+              </div>
+            </div>
+
+            <!-- Seção de Arquivo do Requerimento -->
+            <div class="mb-3">
+              <h5 class="h6 text-dark mb-3">Arquivo do Requerimento</h5>
+              <div class="p-3 rounded border bg-light">
+                <div th:if="${processo.requerimentoPdf != null}">
+                  <a th:href="@{/processos/{id}/requerimento(id=${processo.id})}"
+                     target="_blank"
+                     class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-file-earmark-pdf me-1"></i> Ver PDF
+                  </a>
+                  <span class="text-muted small ms-2">Arquivo disponível para visualização</span>
+                </div>
+                <div th:if="${processo.requerimentoPdf == null}">
+                  <span class="text-muted small">
+                    <i class="bi bi-exclamation-circle me-1"></i> Nenhum arquivo anexado
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- registrar parecer -->
+            <form th:action="@{/professores/decisao/{id}(id=${processo.id})}"
+                  method="post"
+                  th:object="${processo}"
+                  class="row g-3">
+
+              <div class="col-12">
+                <label for="decisaoRelator"
+                       class="form-label small text-uppercase text-dark">
+                  Tipo da Decisão
+                </label>
+
+                <select id="decisaoRelator"
+                        name="decisaoRelator"
+                        th:field="*{decisaoRelator}"
+                        class="form-select"
+                        required>
+
+                  <option value="">Selecione...</option>
+                  <option value="DEFERIDO">Deferido</option>
+                  <option value="INDEFERIDO">Indeferido</option>
+
+                </select>
+                <p th:if="${#fields.hasErrors('decisaoRelator')}" th:errors="*{decisaoRelator}" class="text-danger small mt-1"></p>
+              </div>
+
+              <div class="col-12">
+                <label for="parecerTexto"
+                       class="form-label small text-uppercase text-dark">
+                  Parecer
+                </label>
+
+                <textarea id="parecerTexto"
+                          name="parecerTexto"
+                          th:field="*{parecerTexto}"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Digite seu parecer aqui...">
+                </textarea>
+
+                <small class="text-muted">
+                  Descreva sua análise e decisão sobre o processo
+                </small>
+              </div>
+
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/professores}"
+                   class="btn btn-light border">
+                  Voltar
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                  Registrar parecer
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

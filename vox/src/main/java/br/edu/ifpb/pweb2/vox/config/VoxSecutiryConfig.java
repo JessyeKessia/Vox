@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +16,7 @@ import br.edu.ifpb.pweb2.vox.service.UsuarioDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class VoxSecutiryConfig {
 
     @Autowired
@@ -26,7 +28,11 @@ public class VoxSecutiryConfig {
             .authorizeHttpRequests( auth -> auth
                 .requestMatchers("/css/**", "/imagens/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/processos/form").hasRole("ALUNO")
+                .requestMatchers("/processos/{id}/requerimento").hasAnyRole("ALUNO", "PROFESSOR", "COORDENADOR")
                 .requestMatchers("/processos/**").hasRole("ALUNO")
+                .requestMatchers("/professores/**").hasRole("PROFESSOR")
+                .requestMatchers("/coordenadores/**").hasRole("COORDENADOR")
                 .anyRequest().authenticated()
                 
             )

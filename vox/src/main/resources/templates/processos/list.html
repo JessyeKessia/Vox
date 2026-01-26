@@ -105,15 +105,15 @@
                     <td>
 
                     <!-- Se tiver Arquivo -->
-                    <a th:if="${p.requerimentoArquivo != null}"
+                    <a th:if="${p.requerimentoPdf != null}"
                       th:href="@{/processos/{id}/requerimento(id=${p.id})}"
                       target="_blank"
-                      class="btn btn-sm btn-outline-secondary">
+                      class="btn btn-sm btn-outline-danger">
 
                       <i class="bi bi-file-earmark-pdf me-1"></i> Ver PDF
                     </a>
                     <!-- Se não tiver arquvos -->
-                    <span th:if="${p.requerimentoArquivo == null}" class="text-muted small">
+                    <span th:if="${p.requerimentoPdf == null}" class="text-muted small">
                       Sem arquivo
                     </span>
                   </td>

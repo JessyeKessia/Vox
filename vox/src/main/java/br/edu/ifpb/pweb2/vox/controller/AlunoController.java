@@ -6,8 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,9 +32,10 @@ import br.edu.ifpb.pweb2.vox.service.ProcessoService;
 import br.edu.ifpb.pweb2.vox.service.UsuarioService;
 import jakarta.validation.Valid;
 
+
 @Controller
 @RequestMapping("/processos")
-public class ProcessoController {
+public class AlunoController {
 
     @Autowired
     private ProcessoService processoService;
@@ -76,56 +76,55 @@ public class ProcessoController {
 
     // salva o processando quando você clica em salvar no formulário
     @PostMapping
-    public ModelAndView salvarProcesso(@Valid Processo processo, BindingResult bindingResult,
-        ModelAndView modelAndView, @AuthenticationPrincipal Usuario usuario) {
+    public ModelAndView salvarProcesso(
+            @Valid @ModelAttribute Processo processo,
+            BindingResult bindingResult,
+            ModelAndView modelAndView,
+            @AuthenticationPrincipal Usuario usuario) {
 
+        // erros de validação dos campos normais
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("processos/form");
-            modelAndView.addObject("processo", processo);
             return modelAndView;
         }
-        
-        // Busca o Aluno correspondente ao usuário logado
 
-        processo.setAlunoInteressado(usuario); 
+        // seta o aluno logado como autor do processo
+        processo.setAlunoInteressado(usuario);
 
-        System.out.println(processo);
+        MultipartFile arquivo = processo.getRequerimentoArquivo();
 
+        // se o usuário enviou um arquivo
+        if (arquivo != null && !arquivo.isEmpty()) {
 
-        // upload só é permitido se estiver em CRIADO
-        /* if (requerimentoPdf != null && !requerimentoPdf.isEmpty()) {
-            try {
-                processo.setRequerimentoArquivo(requerimentoPdf.getBytes());
-            } catch (IOException e) {
-                bindingResult.reject("requerimentoPdf", 
-                "Erro ao processar o arquivo.");
-                modelAndView.setViewName("processos/form");
-                return modelAndView;
-            } */
-        /* 
-            // valida tipo 
-            if (!"application/pdf".equalsIgnoreCase(requerimentoPdf.getContentType())) {
-    
-                bindingResult.reject("requerimentoPdf", 
-                "O arquivo deve ser um PDF.");
+            // valida tipo
+            if (!"application/pdf".equalsIgnoreCase(arquivo.getContentType())) {
+                bindingResult.rejectValue(
+                    "requerimentoArquivo",
+                    "arquivo.invalido",
+                    "O arquivo deve ser um PDF."
+                );
                 modelAndView.setViewName("processos/form");
                 return modelAndView;
             }
+
             try {
-                processo.setRequerimentoArquivo(requerimentoPdf.getBytes());
+                // converte MultipartFile -> byte[]
+                processo.setRequerimentoPdf(arquivo.getBytes());
             } catch (IOException e) {
-                bindingResult.reject("requerimentoPdf", 
-                "Erro ao processar o arquivo.");
+                bindingResult.rejectValue(
+                    "requerimentoArquivo",
+                    "arquivo.erro",
+                    "Erro ao processar o arquivo."
+                );
                 modelAndView.setViewName("processos/form");
                 return modelAndView;
-            } */
-   //     }
+            }
+        }
 
         processoService.save(processo);
-
-        modelAndView.setViewName("redirect:/processos");
-        return modelAndView;
+        return new ModelAndView("redirect:/processos");
     }
+
 
     // lista os processos com filtros
     @GetMapping()
@@ -157,31 +156,12 @@ public class ProcessoController {
 
             return mv;
         }
-    // lista os processos de designados a cada professor
 
-    @GetMapping("/professores")
-    public ModelAndView listarProcessosDesignados(@AuthenticationPrincipal Usuario usuarioLogado) {
-
-        if (usuarioLogado.getRole() != Role.PROFESSOR && usuarioLogado.getRole() != Role.COORDENADOR) {
-
-            return new ModelAndView("error/403");
-        }
-
-        List<Processo> processos = processoService.findByProfessor(usuarioLogado);
-
-        ModelAndView modelAndView = new ModelAndView("professores/processos/list");
-
-        modelAndView.addObject("processos", processos);
-
-        return modelAndView;
-    
-    }
-
-    @GetMapping("/processos/{id}/requerimento")
+    @GetMapping("/{id}/requerimento")
     public ResponseEntity<byte[]> visualizarRequerimento(@PathVariable Long id) {
         Processo processo = processoService.findById(id);
 
-        if (processo.getRequerimentoArquivo() == null || processo.getRequerimentoArquivo().length == 0) {
+        if (processo.getRequerimentoPdf() == null || processo.getRequerimentoPdf().length == 0) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
@@ -189,25 +169,30 @@ public class ProcessoController {
         headers.setContentType(MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("inline", "requerimento-" + processo.getNumero() + ".pdf");
 
-        return new ResponseEntity<>(processo.getRequerimentoArquivo(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(processo.getRequerimentoPdf(), headers, HttpStatus.OK);
     }
 
 
     @GetMapping("/delete/{id}")
     public ModelAndView excluirProcesso(@PathVariable Long id) {
         processoService.deleteById(id);
-        return new ModelAndView("redirect:/admin/usuarios");
+        return new ModelAndView("redirect:/processos");
     }
     
     @GetMapping("/edit/{id}")
-    public ModelAndView getProcessoById(@PathVariable Long id, ModelAndView model) {
+    public ModelAndView getProcessoById(@PathVariable Long id, ModelAndView model, RedirectAttributes redirectAttributes) {
         Processo processo = processoService.findById(id);
 
-        if (processo.getStatus() != StatusProcesso.CRIADO) {
-            return new ModelAndView("redirect:/processos")
-            .addObject("erro", "Este processo não pode mais ser editado.");
-        }
-        model.setViewName("processos/form");
-        return model;
+        if (processo.getStatus() != StatusProcesso.CRIADO ) {
+            redirectAttributes.addFlashAttribute(
+            "erro",
+            "Este processo não pode mais ser editado pois já foi distribuído."
+        );
+        return new ModelAndView("redirect:/processos");
     }
+
+    ModelAndView mv = new ModelAndView("processos/form");
+    mv.addObject("processo", processo);
+    return mv;
+}
 }

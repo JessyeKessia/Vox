@@ -56,6 +56,22 @@
                 Meus processos
               </a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/professores}" sec:authorize="hasRole('PROFESSOR')">
+                Processos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/professores}" sec:authorize="hasRole('PROFESSOR')">
+                Reuniões
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/coordenadores}" sec:authorize="hasRole('COORDENADOR')">
+                Processos
+              </a>
+            </li>
             
 
             <!-- Dropdown usuário -->

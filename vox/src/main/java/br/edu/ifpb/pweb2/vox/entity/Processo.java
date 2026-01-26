@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 import br.edu.ifpb.pweb2.vox.enums.TipoDecisao;
@@ -56,13 +57,19 @@ public class Processo implements Serializable {
     @Enumerated(EnumType.STRING)
     private StatusProcesso status = StatusProcesso.CRIADO;
 
-    @ToString.Exclude
-    @Column(name = "parecer", columnDefinition = "bytea")
-    private byte[] parecer;
+    private String parecerTexto;
 
     @ToString.Exclude
-    @Column(name = "requerimento_arquivo", columnDefinition = "bytea")
-    private byte[] requerimentoArquivo;
+    @Column(name = "parecer", columnDefinition = "bytea")
+    private byte[] parecerFinal;
+
+    @ToString.Exclude
+    @Column(name = "requerimentoPdf", columnDefinition = "bytea")
+    private byte[] requerimentoPdf;
+
+    @ToString.Exclude
+    @Transient
+    private MultipartFile  requerimentoArquivo;
 
     @Enumerated(EnumType.STRING)
     private TipoDecisao decisaoRelator;

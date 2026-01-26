@@ -92,5 +92,9 @@ public class ColegiadoService {
         colegiado.getMembros().clear(); 
         colegiadoRepository.deleteById(id);
     }
+
+    public List<Usuario> findMembrosByColegiadoId(Long colegiadoId) {
+        return colegiadoRepository.findMembrosByColegiadoId(colegiadoId);
+    }
 }
 

@@ -42,7 +42,6 @@ public class Colegiado {
     private String curso;
 
     @NotNull(message = "Campo obrigatório!")
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
     name = "colegiado_professor",
