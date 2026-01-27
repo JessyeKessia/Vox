@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html
+  lang="pt_BR"
+  xmlns:th="http://www.thymeleaf.org"
+  th:replace="~{layout/base :: base(content=~{::section}, title=(${professor.id} != null ? 'Editar Professor' : 'Cadastrar Professor'))}"
+>
+  <body>
+    <section class="py-4">
+      <div class="container-fluid">
+        <div th:replace="~{fragments/menu :: message-success}"></div>
+        <div th:replace="~{fragments/menu :: message-error}"></div>
+
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <h1
+                class="text-white h4 mb-1"
+                th:text="${professor.id} != null ? 'Editar Professor' : 'Cadastrar Professor'"
+              >
+                Cadastrar Professor
+              </h1>
+              <p class="text-white small mb-0">
+                Informe os dados do professor e defina se ele atua como
+                coordenador.
+              </p>
+            </div>
+
+            <form
+              th:action="@{/professores}"
+              th:object="${professor}"
+              method="post"
+              class="row g-3"
+            >
+              <input type="hidden" th:field="*{id}" />
+
+              <div class="col-md-6">
+                <label for="nome" class="form-label small text-uppercase text-white">Nome</label>
+                <input type="text" id="nome" th:field="*{nome}" class="form-control" />
+                <p th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-6">
+                <label for="fone" class="form-label small text-uppercase text-white">Telefone</label>
+                <input type="text" id="fone" th:field="*{fone}" class="form-control" />
+                <p th:if="${#fields.hasErrors('fone')}" th:errors="*{fone}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-6">
+                <label for="email" class="form-label small text-uppercase text-white">E-mail</label>
+                <input type="text" id="email" th:field="*{email}" class="form-control" />
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-md-6">
+                <label for="senha" class="form-label small text-uppercase text-white">Senha</label>
+                <input type="password" id="senha" th:field="*{senha}" class="form-control" />
+                <p th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}" class="text-white small mt-1"></p>
+              </div>
+
+              <div class="col-12">
+                <div class="form-check mt-2">
+                  <input type="checkbox" id="coordenador" th:field="*{coordenador}" class="form-check-input" />
+                  <label for="coordenador" class="form-check-label text-white">Coordenador</label>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/professores}" class="btn btn-light border">Voltar à lista</a>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

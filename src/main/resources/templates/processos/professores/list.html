@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Procesoss distribuidos'">
+  <body>
+    <section layout:fragment="content" class="py-4">
+      <div class="container-fluid">
+
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+          <div>
+            <h1 class="h3 mb-1">Processos Designados</h1>
+            <p class="text-dark mb-0 small">Processos que foram atribuídos a você.</p>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Assunto</th>
+                    <th>Status</th>
+                    <th>Autor</th>
+                    <th>Data de criação</th>
+                    <th>Data de atribuição</th>
+                    <th>Descrição</th>
+                    <th>Decisão</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="processo : ${processos}">
+                    <td th:text="${processo.assunto != null ? processo.assunto.nome : '—'}">—</td>
+
+                    <td>
+                      <span class="badge rounded-pill"
+                            th:text="${processo.status}"
+                            th:classappend="${processo.status.name() == 'CRIADO' ? ' bg-secondary-subtle text-secondary'
+                              : processo.status.name() == 'DISTRIBUIDO' ? ' bg-primary-subtle text-primary'
+                              : processo.status.name() == 'DISPONIVEL' ? ' bg-success-subtle text-success'
+                              : processo.status.name() == 'EM_PAUTA' ? ' bg-warning-subtle text-warning'
+                              : processo.status.name() == 'JULGADO' ? ' bg-dark-subtle text-dark'
+                              : ' bg-secondary-subtle text-secondary'}">
+                        --
+                      </span>
+                    </td>
+
+                    <td th:text="${processo.alunoInteressado != null ? processo.alunoInteressado.nome : '—'}">—</td>
+
+                    <td th:text="${processo.dataCriacao != null ? #temporals.format(processo.dataCriacao, 'dd/MM/yyyy') : '—'}">--/--/----</td>
+
+                    <td th:text="${processo.dataDistribuicao != null ? #temporals.format(processo.dataDistribuicao, 'dd/MM/yyyy') : '—'}">--/--/----</td>
+
+                    <td class="text-truncate" style="max-width: 360px" th:text="${processo.descricao}">—</td>
+
+                    <td>
+                      <span th:if="${processo.decisaoRelator == null}" class="badge bg-secondary">Pendente</span>
+                      <span th:if="${processo.decisaoRelator != null and processo.decisaoRelator.name() == 'DEFERIDO'}" class="badge bg-success">Deferido</span>
+                      <span th:if="${processo.decisaoRelator != null and processo.decisaoRelator.name() == 'INDEFERIDO'}" class="badge bg-danger">Indeferido</span>
+                    </td>
+
+                    <td>
+                      <a th:if="${processo.status.name() == 'DISTRIBUIDO'}"
+                        th:href="@{/professores/decisao/form/{id}(id=${processo.id})}"
+                        class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-person-check me-1"></i> Avaliar
+                      </a> 
+
+                      <!-- Botão desabilitado quando o processo não está distribuído -->
+                      <a th:if="${processo.status.name() != 'DISTRIBUIDO'}"
+                        class="btn btn-sm btn-outline-primary disabled btn-secondary text-dark"
+                        style="border-color: #6c757d;"
+                        aria-disabled="true"
+                        tabindex="-1">
+                        <i class="bi bi-person-check me-1"></i> Avaliar
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr th:if="${processos == null or processos.size() == 0}">
+                    <td colspan="8" class="text-center py-4">Nenhum processo encontrado.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </body>
+</html>
