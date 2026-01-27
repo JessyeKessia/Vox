@@ -21,6 +21,7 @@ import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 import br.edu.ifpb.pweb2.vox.enums.TipoDecisao;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
+import br.edu.ifpb.pweb2.vox.service.ReuniaoService;
 import br.edu.ifpb.pweb2.vox.service.VotoService;
 
 @Controller
@@ -32,6 +33,9 @@ public class ProfessorController {
 
     @Autowired
     private VotoService votoService;
+
+    @Autowired
+    private ReuniaoService reuniaoService;
 
     @ModelAttribute("decisaoItens")
     public TipoDecisao[] getDecisao() {
@@ -45,6 +49,14 @@ public class ProfessorController {
         modelAndView.addObject("processos", processos);
         return modelAndView;
     
+    }
+    
+    @GetMapping("/reunioes")
+    public ModelAndView listarParaProfessor() {
+        ModelAndView mv = new ModelAndView("reunioes/professores/list");
+        
+        mv.addObject("reunioes", reuniaoService.findAll()); 
+        return mv;
     }
 
     @GetMapping("/decisao/form/{id}")

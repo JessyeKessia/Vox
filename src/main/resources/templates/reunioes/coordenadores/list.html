@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<body>
+    <section layout:fragment="content" class="py-4">
+        <div class="container">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">Reuniões de Colegiado</h1>
+                    <p class="text-muted small mb-0">Gerencie e agende novas sessões deliberativas.</p>
+                </div>
+                <a th:href="@{/coordenadores/reunioes/form}" class="btn btn-primary shadow-sm">
+                    <i class="bi bi-calendar-plus me-1"></i> Agendar Reunião
+                </a>
+            </div>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data da Sessão</th>
+                                    <th>Colegiado</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="r : ${reunioes}">
+                                    <td class="fw-bold" th:text="${#temporals.format(r.data, 'dd/MM/yyyy')}"></td>
+                                    <td th:text="${r.colegiado.curso}"></td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-info text-dark" th:text="${r.status}"></span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a th:href="@{/coordenadores/reunioes/{id}/conduzir(id=${r.id})}" 
+                                           class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-play-circle me-1"></i> Conduzir
+                                        </a>
+                                    </td>
+                                </tr>
+                                
+                                <tr th:if="${reunioes == null or #lists.isEmpty(reunioes)}">
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        Nenhuma reunião agendada.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

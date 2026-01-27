@@ -16,9 +16,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import br.edu.ifpb.pweb2.vox.entity.Processo;
+import br.edu.ifpb.pweb2.vox.entity.Reuniao;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.service.ColegiadoService;
 import br.edu.ifpb.pweb2.vox.service.ProcessoService;
+import br.edu.ifpb.pweb2.vox.service.ReuniaoService;
 import br.edu.ifpb.pweb2.vox.service.UsuarioService;
 import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
@@ -29,6 +31,10 @@ public class CoordenadorController {
 
     @Autowired
     private ProcessoService processoService;
+
+        
+    @Autowired
+    private ReuniaoService reuniaoService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -103,6 +109,56 @@ public class CoordenadorController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/coordenadores");
         return modelAndView;   
+    }
+    @GetMapping("/reunioes")
+    public ModelAndView listarReunioes() {
+        ModelAndView mv = new ModelAndView("reunioes/coordenadores/list");
+        mv.addObject("reunioes", reuniaoService.findAll());
+        return mv;
+    }
+
+    @GetMapping("/reunioes/form")
+    public ModelAndView formReunioes() {
+        ModelAndView mv = new ModelAndView("reunioes/coordenadores/form");
+        // Adicione esta linha para inicializar o th:object="${reuniao}" do HTML
+        mv.addObject("reuniao", new Reuniao());
+        
+        mv.addObject("colegiadosItens", colegiadoService.findAll());
+        
+        // Filtra processos prontos para pauta (DISPONIVEIS)
+        mv.addObject("processosItens", processoService.findAll().stream()
+            .filter(p -> p.getStatus() == StatusProcesso.DISPONIVEL).toList());
+        
+        mv.addObject("professoresItens", usuarioService.findByRole(Role.PROFESSOR));
+        return mv;
+    }
+
+
+    @PostMapping("/reunioes/save")
+    public String save(Reuniao reuniao) {
+        // Atualiza status dos processos para EM_PAUTA ao agendar
+        reuniao.getPauta().forEach(p -> p.setStatus(StatusProcesso.EM_PAUTA));
+        reuniaoService.save(reuniao);
+        return "redirect:coordenadores/reunioes";
+    }
+
+    @GetMapping("reunioes/{id}/conduzir")
+    public ModelAndView conduzir(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("reunioes/coordenadores/conduzir"); 
+        mv.addObject("reuniao", reuniaoService.findById(id));
+        return mv;
+    }
+
+    @PostMapping("reunioes/{id}/iniciar")
+    public String iniciar(@PathVariable Long id) {
+        reuniaoService.iniciarSessao(id);
+        return "redirect:/coordenadores/reunioes/" + id + "/conduzir";
+    }
+
+    @PostMapping("reunioes/{id}/finalizar")
+    public String finalizar(@PathVariable Long id) {
+        reuniaoService.finalizarSessao(id);
+        return "redirect:/coordenadores/reunioes";
     }
 
     @GetMapping

@@ -32,6 +32,6 @@ public class Reuniao {
     @JoinTable(name = "reuniao_membros")
     private List<Usuario> membros = new ArrayList<>();
 
-    @Column(columnDefinition = "byte")
+    @Lob
     private byte[] ata; 
 }

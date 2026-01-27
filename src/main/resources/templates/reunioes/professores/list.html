@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head}"></head>
+<body class="bg-light">
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
+    
+    <div class="container mt-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h2 class="text-primary fw-bold mb-0">Minhas Reuniões</h2>
+                <p class="text-muted mb-0">Visualize as sessões do colegiado em que você participa.</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="alert alert-warning" th:if="${#lists.isEmpty(reunioes)}">
+                    Você não possui reuniões agendadas ou vinculadas ao seu perfil no momento.
+                </div>
+
+                <div class="table-responsive" th:if="${!#lists.isEmpty(reunioes)}">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Colegiado</th>
+                                <th>Status</th>
+                                <th class="text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="reuniao : ${reunioes}">
+                                <td class="fw-bold" th:text="${#temporals.format(reuniao.data, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${reuniao.colegiado.curso}"></td>
+                                <td>
+                                    <span th:if="${reuniao.status.name() == 'PROGRAMADA'}" class="badge bg-info">Agendada</span>
+                                    <span th:if="${reuniao.status.name() == 'EM_ANDAMENTO'}" class="badge bg-success">Em Sessão</span>
+                                    <span th:if="${reuniao.status.name() == 'FINALIZADA'}" class="badge bg-secondary">Concluída</span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/professores/reunioes/{id}(id=${reuniao.id})}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> Detalhes
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
