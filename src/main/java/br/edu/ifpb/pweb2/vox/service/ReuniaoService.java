@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional; // Import correto
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ReuniaoService {
@@ -23,6 +25,10 @@ public class ReuniaoService {
 
     public List<Reuniao> findAll() { 
         return reuniaoRepository.findAll(); 
+    }
+
+    public Page<Reuniao> findAll(Pageable pageable) {
+        return reuniaoRepository.findAll(pageable);
     }
 
     public Reuniao findById(Long id) { 

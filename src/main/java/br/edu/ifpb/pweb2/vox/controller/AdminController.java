@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -45,9 +48,29 @@ public class AdminController {
     }
     
     @GetMapping("/usuarios")
-    public ModelAndView listarUsuarios() {
+    public ModelAndView listarUsuarios(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(required = false) String sort
+    ) {
         ModelAndView mv = new ModelAndView("admin/usuarios/list");
-        mv.addObject("usuarios", usuarioService.findAll());
+
+        PageRequest pageRequest;
+        if (sort != null && !sort.isBlank()) {
+            String[] parts = sort.split(",");
+            if (parts.length == 2) {
+                Sort.Direction dir = Sort.Direction.fromString(parts[1]);
+                pageRequest = PageRequest.of(page, size, Sort.by(dir, parts[0]));
+            } else {
+                pageRequest = PageRequest.of(page, size, Sort.by(sort));
+            }
+        } else {
+            pageRequest = PageRequest.of(page, size);
+        }
+
+        Page<Usuario> usuarios = usuarioService.findAll(pageRequest);
+        mv.addObject("usuarios", usuarios);
+        mv.addObject("sort", sort);
         return mv;
     }
     
@@ -125,9 +148,29 @@ public class AdminController {
        ========================= */
 
     @GetMapping("/colegiados")
-    public ModelAndView listarColegiados() {
+    public ModelAndView listarColegiados(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(required = false) String sort
+    ) {
         ModelAndView mv = new ModelAndView("admin/colegiados/list");
-        mv.addObject("colegiados", colegiadoService.findAll());
+
+        PageRequest pageRequest;
+        if (sort != null && !sort.isBlank()) {
+            String[] parts = sort.split(",");
+            if (parts.length == 2) {
+                Sort.Direction dir = Sort.Direction.fromString(parts[1]);
+                pageRequest = PageRequest.of(page, size, Sort.by(dir, parts[0]));
+            } else {
+                pageRequest = PageRequest.of(page, size, Sort.by(sort));
+            }
+        } else {
+            pageRequest = PageRequest.of(page, size);
+        }
+
+        Page<Colegiado> colegiados = colegiadoService.findAll(pageRequest);
+        mv.addObject("colegiados", colegiados);
+        mv.addObject("sort", sort);
         return mv;
     }
 
@@ -217,9 +260,29 @@ public class AdminController {
      ========================= */
     
     @GetMapping("/assuntos")
-    public ModelAndView listarAssuntos() {
+    public ModelAndView listarAssuntos(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(required = false) String sort
+    ) {
         ModelAndView mv = new ModelAndView("admin/assuntos/list");
-        mv.addObject("assuntos", assuntoService.findAll());
+
+        PageRequest pageRequest;
+        if (sort != null && !sort.isBlank()) {
+            String[] parts = sort.split(",");
+            if (parts.length == 2) {
+                Sort.Direction dir = Sort.Direction.fromString(parts[1]);
+                pageRequest = PageRequest.of(page, size, Sort.by(dir, parts[0]));
+            } else {
+                pageRequest = PageRequest.of(page, size, Sort.by(sort));
+            }
+        } else {
+            pageRequest = PageRequest.of(page, size);
+        }
+
+        Page<Assunto> assuntos = assuntoService.findAll(pageRequest);
+        mv.addObject("assuntos", assuntos);
+        mv.addObject("sort", sort);
         return mv;
     }
 
