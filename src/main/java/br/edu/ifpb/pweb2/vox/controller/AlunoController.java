@@ -130,9 +130,11 @@ public class AlunoController {
     @GetMapping()
     public ModelAndView listarProcessos(
         @RequestParam(required = false) String status,
-        @RequestParam(required = false) String assunto, 
-        @AuthenticationPrincipal Usuario usuarioLogado) 
-        {
+        @RequestParam(required = false) String assunto,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @AuthenticationPrincipal Usuario usuarioLogado) {
+
             ModelAndView mv = new ModelAndView("processos/list");
 
             Long alunoId = usuarioLogado.getId(); // sempre existe aqui
@@ -146,10 +148,12 @@ public class AlunoController {
 
             String assuntoFiltro = (assunto != null && !assunto.isBlank()) ? assunto : null;
 
-            List<Processo> processos =
-                    processoService.findForAlunoProcessos(statusEnum, assuntoFiltro, alunoId);
+            org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(page, size);
 
-            // devolve filtros e lista
+            org.springframework.data.domain.Page<Processo> processos =
+                    processoService.findForAlunoProcessos(statusEnum, assuntoFiltro, alunoId, pageRequest);
+
+            // devolve filtros e lista (Page)
             mv.addObject("processos", processos);
             mv.addObject("statusSelecionado", status);
             mv.addObject("assuntoSelecionado", assunto);

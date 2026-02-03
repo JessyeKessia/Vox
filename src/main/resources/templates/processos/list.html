@@ -84,8 +84,8 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <!-- itera sobre 'processos' fornecida pelo controller -->
-                  <tr th:each="p : ${processos}">
+                  <!-- itera sobre 'processos' (Page) fornecida pelo controller -->
+                  <tr th:each="p : ${processos.content}">
                     <td class="fw-semibold text-primary" th:text="${p.numero}">--</td>
                     <td th:text="${#temporals.format(p.dataCriacao, 'dd/MM/yyyy')}">--/--/----</td>
                     <td>
@@ -141,13 +141,32 @@
                       </a>
                   </td>
                   </tr>
-                  <tr th:if="${processos.size() == 0}">
-                    <td colspan="5" class="text-center py-4">Nenhum processo encontrado com os filtros atuais.</td>
+                  <tr th:if="${processos.totalElements == 0}">
+                    <td colspan="7" class="text-center py-4">Nenhum processo encontrado com os filtros atuais.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+        <!-- Paginação -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <nav>
+              <ul class="pagination mb-0">
+                <li th:classappend="${processos.hasPrevious()} ? '' : 'disabled'" class="page-item">
+                  <a th:href="@{/processos(page=${processos.number - 1},size=${processos.size},status=${statusSelecionado},assunto=${assuntoSelecionado})}" class="page-link">Anterior</a>
+                </li>
+                <li class="page-item disabled">
+                  <span class="page-link">Página <span th:text="${processos.number + 1}"></span> de <span th:text="${processos.totalPages}"></span></span>
+                </li>
+                <li th:classappend="${processos.hasNext()} ? '' : 'disabled'" class="page-item">
+                  <a th:href="@{/processos(page=${processos.number + 1},size=${processos.size},status=${statusSelecionado},assunto=${assuntoSelecionado})}" class="page-link">Próximo</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="text-muted small">Total: <span th:text="${processos.totalElements}"></span></div>
         </div>
       </div>
     </section>

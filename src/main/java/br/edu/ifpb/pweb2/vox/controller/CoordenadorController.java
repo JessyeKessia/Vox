@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -111,9 +114,11 @@ public class CoordenadorController {
         return modelAndView;   
     }
     @GetMapping("/reunioes")
-    public ModelAndView listarReunioes() {
+    public ModelAndView listarReunioes(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         ModelAndView mv = new ModelAndView("reunioes/coordenadores/list");
-        mv.addObject("reunioes", reuniaoService.findAll());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reuniao> reunioes = reuniaoService.findAll(pageable);
+        mv.addObject("reunioes", reunioes);
         return mv;
     }
 
@@ -165,7 +170,9 @@ public class CoordenadorController {
     public ModelAndView listarProcessos( 
         @RequestParam(required = false) StatusProcesso status, 
         @RequestParam(required = false) Long alunoInteressadoId, 
-        @RequestParam(required = false) Long relatorId) {
+        @RequestParam(required = false) Long relatorId,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
 
         ModelAndView modelAndView = new ModelAndView("processos/coordenadores/list");
         
@@ -174,8 +181,10 @@ public class CoordenadorController {
         modelAndView.addObject("alunoSelecionado", alunoInteressadoId);
         modelAndView.addObject("professorSelecionado", relatorId);
 
+        Pageable pageable = PageRequest.of(page, size);
+
         // busca usando service (lógica de filtragem fica lá)
-        List<Processo> processos = processoService.findForCoordenadorProcessos(status, alunoInteressadoId, relatorId);
+        Page<Processo> processos = processoService.findForCoordenadorProcessos(status, alunoInteressadoId, relatorId, pageable);
         modelAndView.addObject("processos", processos);
 
         return modelAndView;

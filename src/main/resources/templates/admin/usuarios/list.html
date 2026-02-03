@@ -38,7 +38,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:each="usuario : ${usuarios}">
+                  <tr th:each="usuario : ${usuarios.content}">
                     <td class="fw-semibold" th:text="${usuario.nome}">-</td>
                     <td class="fw-semibold" th:text="${usuario.email}">-</td>
                     <td class="fw-semibold" th:text="${usuario.telefone}">-</td>
@@ -55,7 +55,7 @@
                       </a>
                     </td>
                   </tr>
-                  <tr th:if="${#lists.isEmpty(usuarios)}">
+                  <tr th:if="${usuarios.totalElements == 0}">
                     <td colspan="6" class="text-center text-muted py-4">
                       Nenhum usuário encontrado.
                     </td>
@@ -64,6 +64,25 @@
               </table>
             </div>
           </div>
+        </div>
+        <!-- Paginação -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <nav>
+              <ul class="pagination mb-0">
+                <li th:classappend="${usuarios.hasPrevious()} ? '' : 'disabled'" class="page-item">
+                  <a th:href="@{/admin/usuarios(page=${usuarios.number - 1},size=${usuarios.size},sort=${sort})}" class="page-link">Anterior</a>
+                </li>
+                <li class="page-item disabled">
+                  <span class="page-link">Página <span th:text="${usuarios.number + 1}"></span> de <span th:text="${usuarios.totalPages}"></span></span>
+                </li>
+                <li th:classappend="${usuarios.hasNext()} ? '' : 'disabled'" class="page-item">
+                  <a th:href="@{/admin/usuarios(page=${usuarios.number + 1},size=${usuarios.size},sort=${sort})}" class="page-link">Próximo</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="text-muted small">Total: <span th:text="${usuarios.totalElements}"></span></div>
         </div>
 
       </div>

@@ -111,7 +111,7 @@
                 </thead>
 
                 <tbody>
-                  <tr th:each="p : ${processos}">
+                  <tr th:each="p : ${processos.content}">
                     <td class="fw-semibold text-primary" th:text="${p.numero}">--</td>
 
                     <td th:text="${#temporals.format(p.dataCriacao, 'dd/MM/yyyy')}">
@@ -144,18 +144,12 @@
                         <i class="bi bi-person-check me-1"></i> Distribuir
                       </a>
 
-                      <!-- Botão desabilitado quando o processo não está criado -->
-                      <a th:if="${p.status.name() != 'CRIADO'}"
-                        class="btn btn-sm btn-outline-primary disabled btn-secondary text-dark"
-                        style="border-color: #6c757d;"
-                        aria-disabled="true"
-                        tabindex="-1">
-                        <i class="bi bi-person-check me-1"></i> Distribuir
-                      </a>
+                      <!-- Mostra '-' quando a ação não está disponível -->
+                      <span th:if="${p.status.name() != 'CRIADO'}" class="text-muted">-</span>
                     </td>
                   </tr>
 
-                  <tr th:if="${processos == null or processos.size() == 0}">
+                  <tr th:if="${processos == null or processos.totalElements == 0}">
                     <td colspan="6" class="text-center py-4">
                       Nenhum processo encontrado com os filtros atuais.
                     </td>
@@ -164,6 +158,26 @@
 
               </table>
             </div>
+          </div>
+        </div>
+
+        <!-- Paginação -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div class="small text-muted">Total: <span th:text="${processos.totalElements}">0</span></div>
+          <div>
+            <nav>
+              <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${processos.first} ? ' disabled'">
+                  <a class="page-link" th:href="@{/coordenadores(page=${processos.number-1}, size=${processos.size}, status=${statusSelecionado}, alunoInteressadoId=${alunoSelecionado}, relatorId=${professorSelecionado})}">Anterior</a>
+                </li>
+                <li class="page-item disabled">
+                  <span class="page-link">Página <span th:text="${processos.number + 1}">1</span> de <span th:text="${processos.totalPages}">1</span></span>
+                </li>
+                <li class="page-item" th:classappend="${processos.last} ? ' disabled'">
+                  <a class="page-link" th:href="@{/coordenadores(page=${processos.number+1}, size=${processos.size}, status=${statusSelecionado}, alunoInteressadoId=${alunoSelecionado}, relatorId=${professorSelecionado})}">Próximo</a>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
 

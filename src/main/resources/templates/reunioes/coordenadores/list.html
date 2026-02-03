@@ -30,7 +30,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="r : ${reunioes}">
+                                <tr th:each="r : ${reunioes.content}">
                                     <td class="fw-bold" th:text="${#temporals.format(r.data, 'dd/MM/yyyy')}"></td>
                                     <td th:text="${r.colegiado.curso}"></td>
                                     <td>
@@ -44,7 +44,7 @@
                                     </td>
                                 </tr>
                                 
-                                <tr th:if="${reunioes == null or #lists.isEmpty(reunioes)}">
+                                <tr th:if="${reunioes == null or reunioes.totalElements == 0}">
                                     <td colspan="4" class="text-center py-5 text-muted">
                                         Nenhuma reunião agendada.
                                     </td>
@@ -52,6 +52,26 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+            
+            <!-- Paginação -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div class="small text-muted">Total: <span th:text="${reunioes.totalElements}">0</span></div>
+                <div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <li class="page-item" th:classappend="${reunioes.first} ? ' disabled'">
+                                <a class="page-link" th:href="@{/coordenadores/reunioes(page=${reunioes.number-1}, size=${reunioes.size})}">Anterior</a>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link">Página <span th:text="${reunioes.number + 1}">1</span> de <span th:text="${reunioes.totalPages}">1</span></span>
+                            </li>
+                            <li class="page-item" th:classappend="${reunioes.last} ? ' disabled'">
+                                <a class="page-link" th:href="@{/coordenadores/reunioes(page=${reunioes.number+1}, size=${reunioes.size})}">Próximo</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>

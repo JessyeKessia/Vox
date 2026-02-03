@@ -34,5 +34,60 @@ public class DataInitializer implements CommandLineRunner {
     } else {
       System.out.println("Usuário ADMIN já existe.");
     }
+
+    String professorEmail = "professor@vox.com";
+
+    if (usuarioService.findByEmail(professorEmail) == null) {
+
+      Usuario professor = new Usuario();
+      professor.setNome("Paulo Professor");
+      professor.setEmail(professorEmail);
+      professor.setSenha("prof123");
+      professor.setTelefone("83999998888");
+      professor.setRole(Role.PROFESSOR);
+
+      usuarioService.save(professor);
+
+      System.out.println("Usuário PROFESSOR criado com sucesso!");
+    } else {
+      System.out.println("Usuário PROFESSOR já existe.");
+    }
+
+    String alunoEmail = "aluno@vox.com";
+
+    if (usuarioService.findByEmail(alunoEmail) == null) {
+
+      Usuario aluno = new Usuario();
+      aluno.setNome("Ana Aluna");
+      aluno.setEmail(alunoEmail);
+      aluno.setSenha("aluno123");
+      aluno.setTelefone("83977776666");
+      aluno.setRole(Role.ALUNO);
+
+      usuarioService.save(aluno);
+
+      System.out.println("Usuário ALUNO criado com sucesso!");
+    } else {
+      System.out.println("Usuário ALUNO já existe.");
+    }
+
+    String coordenadorEmail = "coordenador@vox.com";
+
+    if (usuarioService.findByEmail(coordenadorEmail) == null) {
+
+      Usuario coordenador = new Usuario();
+      coordenador.setNome("Carla Coordenadora");
+      coordenador.setEmail(coordenadorEmail);
+      coordenador.setSenha("coord123");
+      coordenador.setTelefone("83966665555");
+      coordenador.setRole(Role.COORDENADOR);
+
+      usuarioService.save(coordenador);
+
+      System.out.println("Usuário COORDENADOR criado com sucesso!");
+    } else {
+      System.out.println("Usuário COORDENADOR já existe.");
+    }
   }
+
 }

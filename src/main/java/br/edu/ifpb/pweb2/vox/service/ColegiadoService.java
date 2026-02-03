@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ColegiadoService {
@@ -26,6 +28,10 @@ public class ColegiadoService {
 
     public List<Colegiado> findAll() {
         return colegiadoRepository.findAll();
+    }
+
+    public Page<Colegiado> findAll(Pageable pageable) {
+        return colegiadoRepository.findAll(pageable);
     }
 
     public Colegiado findById(Long id) {

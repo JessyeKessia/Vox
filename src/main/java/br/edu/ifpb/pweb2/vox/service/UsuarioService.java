@@ -1,6 +1,8 @@
 package br.edu.ifpb.pweb2.vox.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,10 @@ public class UsuarioService {
 
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
+    }
+
+    public Page<Usuario> findAll(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
     }
 
     public Usuario findById(Long id) {

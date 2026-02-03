@@ -32,7 +32,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:each="processo : ${processos}">
+                  <tr th:each="processo : ${processos.content}">
                     <td th:text="${processo.assunto != null ? processo.assunto.nome : '—'}">—</td>
 
                     <td>
@@ -69,24 +69,37 @@
                         <i class="bi bi-person-check me-1"></i> Avaliar
                       </a> 
 
-                      <!-- Botão desabilitado quando o processo não está distribuído -->
-                      <a th:if="${processo.status.name() != 'DISTRIBUIDO'}"
-                        class="btn btn-sm btn-outline-primary disabled btn-secondary text-dark"
-                        style="border-color: #6c757d;"
-                        aria-disabled="true"
-                        tabindex="-1">
-                        <i class="bi bi-person-check me-1"></i> Avaliar
-                      </a>
+                      <!-- Mostra '-' quando a ação não está disponível -->
+                      <span th:if="${processo.status.name() != 'DISTRIBUIDO'}" class="text-muted">-</span>
                     </td>
                   </tr>
 
-                  <tr th:if="${processos == null or processos.size() == 0}">
+                  <tr th:if="${processos == null or processos.totalElements == 0}">
                     <td colspan="8" class="text-center py-4">Nenhum processo encontrado.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+        <!-- Paginação -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div>
+            <nav>
+              <ul class="pagination mb-0">
+                <li th:classappend="${processos.hasPrevious()} ? '' : 'disabled'" class="page-item">
+                  <a th:href="@{/professores(page=${processos.number - 1},size=${processos.size})}" class="page-link">Anterior</a>
+                </li>
+                <li class="page-item disabled">
+                  <span class="page-link">Página <span th:text="${processos.number + 1}"></span> de <span th:text="${processos.totalPages}"></span></span>
+                </li>
+                <li th:classappend="${processos.hasNext()} ? '' : 'disabled'" class="page-item">
+                  <a th:href="@{/professores(page=${processos.number + 1},size=${processos.size})}" class="page-link">Próximo</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="text-muted small">Total: <span th:text="${processos.totalElements}"></span></div>
         </div>
 
       </div>
