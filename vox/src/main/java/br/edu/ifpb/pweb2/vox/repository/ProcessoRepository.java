@@ -3,6 +3,7 @@ package br.edu.ifpb.pweb2.vox.repository;
 import org.springframework.stereotype.Repository;
 
 import br.edu.ifpb.pweb2.vox.entity.Processo;
+import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.StatusProcesso;
 
 import java.util.List;
@@ -43,6 +44,9 @@ public interface ProcessoRepository extends JpaRepository<Processo, Long> {
 
     @Query("SELECT p FROM Processo p WHERE p.relator.id = :professorId")
     List<Processo> findByRelatorId(@Param("professorId") Long professorId);
+
+
+    List<Processo> findAllById(Iterable<Long> ids);
 
 
 }

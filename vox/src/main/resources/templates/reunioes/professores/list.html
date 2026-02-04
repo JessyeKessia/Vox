@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Listar de Reuniões'">
+<body class="bg-light">
+
+<section layout:fragment="content" class="py-4">
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
+          <div>
+            <h1 class="h3 mb-1">Reuniões</h1>
+            <p class="text-dark mb-0 small">Visualize, filtre e acompanhe as reuniões em andamento.</p>
+          </div>
+        </div>
+        
+        <!-- ===== FILTROS ===== -->
+        <div class="cards-form card border-0 shadow mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-2 d-flex align-items-center justify-content-center rounded-circle bg-light border"
+                         style="width: 32px; height: 32px">
+                        <i class="bi bi-funnel text-secondary"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-secondary h6 mb-0">Filtros</h2>
+                        <small class="text-muted">Refine a busca por colegiado e status.</small>
+                    </div>
+                </div>
+
+                <form th:action="@{/professores/reunioes}" method="get" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label for="colegiado" class="form-label small text-uppercase text-dark">Colegiado</label>
+                        <select id="colegiado" name="colegiado" class="form-select">
+                            <option value="">Todos</option>
+                            <option th:each="c : ${colegiadosItens}" th:value="${c.id}" th:text="${c.curso}" th:selected="${c.id == colegiadoSelecionado}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="status" class="form-label small text-uppercase text-dark">Status</label>
+                        <select id="status" name="status" class="form-select">
+                            <option value="">Todos</option>
+                            <option th:each="s : ${statusReuniaoItens}" th:value="${s.name()}" th:text="${s.name()}" th:selected="${s.name() == statusSelecionado}"></option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 d-flex gap-2 justify-content-md-end">
+                        <button type="submit" class="btn btn-outline-primary"
+                                style="color: #0d6efd; border-color: #0d6efd;  
+                                       --bs-btn-hover-color: #0d6efd; 
+                                       --bs-btn-hover-bg: rgba(13, 110, 253, 0.08);
+                                       --bs-btn-hover-border-color: #0d6efd;">
+                            <i class="bi bi-search me-1"></i> Filtrar
+                        </button>
+                        <a th:href="@{/professores/reunioes}" class="btn btn-light border">Limpar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===== LISTA DE REUNIÕES ===== -->
+            
+            <div class="card-body">
+                <div class="table-responsive" th:if="${!#lists.isEmpty(reunioes)}">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Colegiado</th>
+                                <th>Status</th>
+                                <th class="text-center">Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="reuniao : ${reunioes}">
+                                <td class="fw-bold" th:text="${#temporals.format(reuniao.data, 'dd/MM/yyyy')}"></td>
+                                <td th:text="${reuniao.colegiado != null ? reuniao.colegiado.curso : 'Não definido'}"></td>
+                                <td>
+                                    <span th:if="${reuniao.status.name() == 'PROGRAMADA'}" class="badge bg-info">Programada</span>
+                                    <span th:if="${reuniao.status.name() == 'EM_ANDAMENTO'}" class="badge bg-success">Em Andamento</span>
+                                    <span th:if="${reuniao.status.name() == 'ENCERRADA'}" class="badge bg-secondary">Encerrada</span>
+                                </td>
+                                <td class="text-center">
+                                    <a th:href="@{/professores/reunioes/voto/{id}(id=${reuniao.id})}"
+                                    class="btn btn-sm"
+                                    th:classappend="${reuniao.status.name() == 'EM_ANDAMENTO' 
+                                                    and possuiProcessosParaVotarMap[reuniao.id]} 
+                                                    ? ' btn-outline-success'
+                                                    : ' btn-outline-secondary disabled'">
+                                        <i class="bi bi-check2-square me-1"></i> Votar
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${reunioes.size() == 0}">
+                                <td colspan="5" class="text-center py-4">Nenhuma reunião encontrada com os filtros atuais.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+    </div>
+</section>
+</body>
+</html>

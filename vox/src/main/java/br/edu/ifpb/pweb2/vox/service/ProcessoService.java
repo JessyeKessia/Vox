@@ -1,5 +1,6 @@
 package br.edu.ifpb.pweb2.vox.service;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +46,14 @@ public class ProcessoService {
     public List<Processo> findByProfessor(Usuario professor) {
         return processoRepository.findByRelatorId(professor.getId());
     }
+
+    public List<Processo> findAllByIds(Iterable<Long> ids) {
+        return processoRepository.findAllById(ids);
+    }
+
+    public Collection<Usuario> findByRelator(Usuario m) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findByRelator'");
+    }
+    
 }

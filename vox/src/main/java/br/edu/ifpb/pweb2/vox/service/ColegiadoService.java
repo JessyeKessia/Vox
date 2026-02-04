@@ -1,6 +1,7 @@
 package br.edu.ifpb.pweb2.vox.service;
 
 import br.edu.ifpb.pweb2.vox.entity.Colegiado;
+import br.edu.ifpb.pweb2.vox.entity.Processo;
 import br.edu.ifpb.pweb2.vox.entity.Usuario;
 import br.edu.ifpb.pweb2.vox.enums.Role;
 import br.edu.ifpb.pweb2.vox.repository.ColegiadoRepository;
@@ -22,6 +23,9 @@ public class ColegiadoService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ProcessoService processoService;
 
 
     public List<Colegiado> findAll() {
@@ -96,5 +100,25 @@ public class ColegiadoService {
     public List<Usuario> findMembrosByColegiadoId(Long colegiadoId) {
         return colegiadoRepository.findMembrosByColegiadoId(colegiadoId);
     }
+
+    public Set<Usuario> buscarMembrosPorProcesso(Long processoId) {
+
+        Processo processo = processoService.findById(processoId);
+
+        Usuario relator = processo.getRelator();
+        if (relator == null) {
+            throw new IllegalStateException("Processo ainda não possui relator.");
+        }
+
+        // regra do domínio: relator pertence a um colegiado e pega todos os memebros desse colegiado
+        return relator.getColegiados()
+            .stream()
+            .findFirst()
+            .orElseThrow(() -> 
+                new IllegalStateException("Relator não pertence a nenhum colegiado.")
+            )
+            .getMembros();
+    }
 }
+
 

@@ -55,6 +55,11 @@ public class Usuario implements UserDetails {
     @EqualsAndHashCode.Exclude
     private Set<Colegiado> colegiados = new HashSet<>();
 
+    @ManyToMany(mappedBy = "membrosPresentes", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Reuniao> memebrosReuniao = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(() -> "ROLE_" + role.name());

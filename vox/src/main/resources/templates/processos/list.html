@@ -80,6 +80,7 @@
                     <th>Descrição</th>
                     <th class="text-nowrap">Assunto</th>
                     <th class="text-nowrap">Arquivo</th>
+                    <th class="text-nowrap">Decisão</th>
                     <th class="text-end text-nowrap">Ações</th>
                   </tr>
                 </thead>
@@ -103,20 +104,35 @@
                     <td class="text-truncate" style="max-width: 360px" th:text="${p.descricao}">--</td>
                     <td th:text="${p.assunto.nome}">--</td>
                     <td>
+                      <!-- Se tiver Arquivo -->
+                      <a th:if="${p.requerimentoPdf != null}"
+                        th:href="@{/processos/{id}/requerimento(id=${p.id})}"
+                        target="_blank"
+                        class="btn btn-sm btn-outline-danger">
 
-                    <!-- Se tiver Arquivo -->
-                    <a th:if="${p.requerimentoPdf != null}"
-                      th:href="@{/processos/{id}/requerimento(id=${p.id})}"
-                      target="_blank"
-                      class="btn btn-sm btn-outline-danger">
-
-                      <i class="bi bi-file-earmark-pdf me-1"></i> Ver PDF
-                    </a>
-                    <!-- Se não tiver arquvos -->
-                    <span th:if="${p.requerimentoPdf == null}" class="text-muted small">
-                      Sem arquivo
-                    </span>
+                        <i class="bi bi-file-earmark-pdf me-1"></i> Ver PDF
+                      </a>
+                      <!-- Se não tiver arquvos -->
+                      <span th:if="${p.requerimentoPdf == null}" class="text-muted small">
+                        Sem arquivo
+                      </span>
                   </td>
+                   <td>
+                      <span th:if="${p.decisaoFinal != null and p.decisaoFinal.name() == 'DEFERIDO'}"
+                            class="badge bg-success">
+                        Deferido
+                      </span>
+
+                      <span th:if="${p.decisaoFinal != null and p.decisaoFinal.name() == 'INDEFERIDO'}"
+                            class="badge bg-danger">
+                        Indeferido
+                      </span>
+
+                      <span th:if="${p.decisaoFinal == null}"
+                            class="badge bg-secondary">
+                        Não definido
+                      </span>
+                    </td>
                     <td class="text-end">
                       <!-- Editar -->
                       <a th:href="@{/processos/edit/{id}(id=${p.id})}"

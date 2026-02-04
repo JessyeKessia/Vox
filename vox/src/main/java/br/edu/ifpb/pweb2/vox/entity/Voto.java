@@ -1,13 +1,14 @@
 package br.edu.ifpb.pweb2.vox.entity;
 
 import br.edu.ifpb.pweb2.vox.enums.TipoVoto;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,18 @@ public class Voto {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private TipoVoto voto;
+    private TipoVoto tipoVoto;
 
-    @Column(nullable = false)
-    boolean ausente;
+    @ManyToOne
+    @JoinColumn(name = "reuniao_id", nullable = false)
+    private Reuniao reuniao;
+
+    @ManyToOne
+    @JoinColumn(name = "processo_id", nullable = false)
+    private Processo processo;
+    
+    // fortemente recomendado
+    @ManyToOne
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Usuario professor;
 }

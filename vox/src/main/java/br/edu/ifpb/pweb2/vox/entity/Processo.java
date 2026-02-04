@@ -60,10 +60,6 @@ public class Processo implements Serializable {
     private String parecerTexto;
 
     @ToString.Exclude
-    @Column(name = "parecer", columnDefinition = "bytea")
-    private byte[] parecerFinal;
-
-    @ToString.Exclude
     @Column(name = "requerimentoPdf", columnDefinition = "bytea")
     private byte[] requerimentoPdf;
 
@@ -77,6 +73,9 @@ public class Processo implements Serializable {
     @ManyToOne
     @JoinColumn(name = "professor_relator_id")
     private Usuario relator; // professor designado como relator
+
+    @Enumerated(EnumType.STRING)
+    private TipoDecisao decisaoFinal;
 
     @PrePersist
     public void gerarNumero() {

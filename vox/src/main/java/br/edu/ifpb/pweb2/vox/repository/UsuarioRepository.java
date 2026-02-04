@@ -23,5 +23,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // pega só usuários com papel PROFESSOR ou COORDENADOR pelos IDs
     List<Usuario> findByIdInAndRoleIn(List<Long> ids, List<Role> roles);
 
-    List<Usuario> findUsuariosByIdIn(List<Long> ids);
+    List<Usuario> findUsuariosByIdIn(Iterable<Long> ids);
 }
