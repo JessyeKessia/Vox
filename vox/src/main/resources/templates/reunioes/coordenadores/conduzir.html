@@ -1,0 +1,255 @@
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Reunião de Colegiado'">
+
+<body>
+<section layout:fragment="content" class="py-4">
+    <div class="container">
+
+        <!-- ===== INFORMAÇÕES DA REUNIÃO ===== -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header border-2 bg-light text-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">
+                    Reunião • <span th:text="${#temporals.format(reuniao.data, 'dd/MM/yyyy')}"></span>
+                </h5>
+                
+                <span class="badge"
+                    th:classappend="${reuniao.status.name() == 'EM_ANDAMENTO'} 
+                                        ? 'bg-success' 
+                                        : (${reuniao.status.name() == 'PROGRAMADA'} 
+                                            ? 'bg-warning text-dark' 
+                                            : 'bg-secondary')"
+                    th:text="${reuniao.status}">
+                </span>
+            </div>
+
+            <div class="card-body">
+                <div class="mb-2">
+                    <strong>Colegiado:</strong>
+                    <span th:text="${reuniao.colegiado.curso}"></span>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Membros presentes:</strong>
+                    <span th:each="m, iter : ${reuniao.membrosPresentes}">
+                        <span th:text="${m.nome}"></span><span th:if="${!iter.last}">, </span>
+                    </span>
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <!-- BOTÃO INICIAR SESSÃO -->
+                    <form th:action="@{/coordenadores/reunioes/iniciar/{id}(id=${reuniao.id})}" method="post">
+                        <button type="submit" class="btn btn-success btn-sm"
+                                th:disabled="${reuniao.status.name() != 'PROGRAMADA'}">
+                            <i class="bi bi-play-fill"></i>
+                            Iniciar Sessão
+                        </button>
+                    </form>
+
+                    <!-- BOTÃO ENCERRAR SESSÃO -->
+                    <form th:action="@{/coordenadores/reunioes/finalizar/{id}(id=${reuniao.id})}" method="post">
+                        <button type="submit"
+                                class="btn btn-danger btn-sm"
+                                th:disabled="${reuniao.status.name() != 'EM_ANDAMENTO'}">
+                            <i class="bi bi-stop-fill"></i>
+                            Encerrar Sessão
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PROCESSOS EM PAUTA ===== -->
+        <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">Processos em Pauta</h5>
+
+            <div class="accordion" id="accordionProcessos">
+
+            <div class="accordion-item mb-2"
+                th:each="p, iter : ${reuniao.pauta}">
+
+                <!-- ===== HEADER ===== -->
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        th:data-bs-target="'#processo-' + ${p.id}">
+
+                    <span>
+                    Processo <strong th:text="${p.numero}"></strong>
+                    </span>
+
+                    <span class="badge ms-3"
+                        th:text="${p.status}"
+                        th:classappend="
+                            ${p.status.name() == 'DISPONIVEL'} 
+                                ? 'bg-success-subtle text-success'
+                                : (${p.status.name() == 'EM_PAUTA'} 
+                                    ? 'bg-warning-subtle text-warning'
+                                    : 'bg-secondary-subtle text-secondary')
+                        ">
+                    </span>
+
+                </button>
+                </h2>
+
+                <!-- ===== CONTEÚDO ===== -->
+                <div class="accordion-collapse collapse"
+                    th:id="'processo-' + ${p.id}"
+                    data-bs-parent="#accordionProcessos">
+
+                    <div class="accordion-body">
+
+                        <div class="row g-3">
+
+                            <!-- ===== DADOS DO PROCESSO ===== -->
+                            <div class="col-md-8">
+                                <div class="border rounded p-3 bg-white h-100">
+
+                                <p class="mb-1">
+                                    <strong>Assunto:</strong>
+                                    <span th:text="${p.assunto.nome}"></span>
+                                </p>
+
+                                <p class="mb-1">
+                                    <strong>Aluno:</strong>
+                                    <span th:text="${p.alunoInteressado.nome}"></span>
+                                </p>
+
+                                <p class="mb-1">
+                                    <strong>Matrícula:</strong>
+                                    <span th:text="${p.alunoInteressado.matricula}"></span>
+                                </p>
+
+                                <p class="mb-1">
+                                    <strong>Data:</strong>
+                                    <span th:text="${#temporals.format(p.dataCriacao, 'dd/MM/yyyy')}"></span>
+                                </p>
+
+                                <hr>
+
+                                <p class="mb-1">
+                                    <strong>Justificativa:</strong><br>
+                                    <span th:text="${p.parecerTexto}"></span>
+                                </p>
+
+                                </div>
+                            </div>
+
+                            <!-- ===== RELATOR / VOTOS ===== -->
+                            <div class="col-md-4">
+                                <div class="border rounded p-3 bg-white h-100">
+
+                                <p class="mb-1">
+                                    <strong>Relator:</strong>
+                                    <span th:text="${p.relator.nome}"></span>
+                                </p>
+
+                                <p class="mb-2">
+                                    <strong>Decisão:</strong><br>
+                                    <span class="badge bg-info text-dark"
+                                        th:text="${p.decisaoRelator}">
+                                    </span>
+                                </p>
+
+                                <hr>
+
+                                <strong>Votos</strong>
+
+                                <ul class="list-group list-group-flush mt-2"
+                                    th:if="${votosPorProcesso != null and votosPorProcesso.containsKey(p.id)}">
+
+                                    <li class="list-group-item px-0"
+                                        th:each="v : ${votosPorProcesso[p.id]}">
+
+                                    <strong th:text="${v.professor.nome}"></strong>
+
+                                    <span th:if="${v.tipoVoto.name() == 'COM_RELATOR'}"
+                                            class="badge bg-success ms-2">
+                                        Com relator
+                                    </span>
+
+                                    <span th:if="${v.tipoVoto.name() == 'DIVERGENTE'}"
+                                            class="badge bg-danger ms-2">
+                                        Divergente
+                                    </span>
+
+                                    <span th:if="${v.tipoVoto.name() == 'AUSENTE'}"
+                                            class="badge bg-secondary ms-2">
+                                        Ausente
+                                    </span>
+                                    </li>
+                                </ul>
+
+                                <span class="text-muted small"
+                                        th:if="${votosPorProcesso == null or !votosPorProcesso.containsKey(p.id)}">
+                                    Nenhum voto registrado
+                                </span>
+
+                                <hr>
+
+                                <strong>Resumo</strong>
+
+                                <div class="mt-2"
+                                    th:if="${contagemVotos != null and contagemVotos.containsKey(p.id)}">
+
+                                    <span class="badge bg-success">
+                                    Com relator:
+                                    <span th:text="${contagemVotos[p.id]['COM_RELATOR']}"></span>
+                                    </span>
+
+                                    <span class="badge bg-danger ms-1">
+                                    Divergentes:
+                                    <span th:text="${contagemVotos[p.id]['DIVERGENTE']}"></span>
+                                    </span>
+
+                                    <span class="badge bg-secondary ms-1">
+                                    Ausentes:
+                                    <span th:text="${contagemVotos[p.id]['AUSENTE']}"></span>
+                                    </span>
+
+                                </div>
+                                
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                            <form th:action="@{/coordenadores/reunioes/colocar-em-pauta/{id}(id=${p.id})}"
+                            method="post"
+                            class="ms-auto">
+                                <input type="hidden" name="reuniaoId" th:value="${reuniao.id}" />
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-primary"
+                                        th:disabled="${reuniao.status.name() != 'EM_ANDAMENTO' 
+                                                    or p.status.name() != 'DISPONIVEL'}">
+                                    Colocar em pauta
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+
+        </div>
+        </div>
+
+</section>
+
+<!-- ===== AUTO REFRESH ===== -->
+<script>
+    setInterval(() => {
+        window.location.reload();
+    }, 5000);
+</script>
+
+</body>
+</html>

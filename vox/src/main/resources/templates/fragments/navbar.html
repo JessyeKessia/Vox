@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+  <body>
+    <nav th:fragment="navbar"
+         class="navbar navbar-expand-lg navbar-dark shadow-sm"
+         style="background: linear-gradient(90deg, #0d6efd, #6610f2); backdrop-filter: blur(12px);">
+
+      <div class="container-fluid px-4">
+
+        <!-- Marca -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/home}">
+          <img th:src="@{/imagens/logo-ofic.png}" width="100" alt="VOX Logo" class="me-2"/>
+
+          <div class="d-flex flex-column">
+            <span class="brand-main">VOX</span>
+            <span class="brand-text d-none d-sm-inline">Painel Acadêmico</span>
+          </div>
+        </a>
+
+        <!-- Botão mobile -->
+        <button class="navbar-toggler border-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+            <!-- Links -->
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/admin/assuntos}" sec:authorize="hasRole('ADMIN')">
+                Assuntos
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/admin/usuarios}" sec:authorize="hasRole('ADMIN')">
+                Usuários
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/admin/colegiados}" sec:authorize="hasRole('ADMIN')">
+                Colegiados
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/processos}" sec:authorize="hasRole('ALUNO')">
+                Meus processos
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/professores}" sec:authorize="hasRole('PROFESSOR')">
+                Processos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/professores/reunioes}" sec:authorize="hasRole('PROFESSOR')">
+                Reuniões
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/coordenadores}" sec:authorize="hasRole('COORDENADOR')">
+                Processos
+              </a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link px-3" th:href="@{/coordenadores/reunioes}" sec:authorize="hasRole('COORDENADOR')">
+                Reuniões
+              </a>
+            </li>
+            
+
+            <!-- Dropdown usuário -->
+            <li class="nav-item dropdown ms-lg-3"
+                sec:authorize="isAuthenticated()">
+
+              <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 text-white"
+                 href="#"
+                 role="button"
+                 data-bs-toggle="dropdown">
+
+                <i class="bi bi-person-circle fs-5"></i>
+                <span sec:authentication="principal.username">Usuário</span>
+              </a>
+
+              <ul class="dropdown-menu dropdown-menu-end shadow">
+                <li>
+                  <form th:action="@{/auth/logout}" method="post" class="m-0 px-3 py-2">
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
+
+                    <button type="submit"
+                            class="btn btn-link dropdown-item d-flex align-items-center gap-2 text-danger">
+                      <i class="bi bi-box-arrow-right"></i>
+                      Sair
+                    </button>
+                  </form>
+                </li>
+              </ul>
+
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>

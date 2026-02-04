@@ -8,6 +8,7 @@ public class VoxApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(VoxApplication.class, args);
+		
 	}
 
 }

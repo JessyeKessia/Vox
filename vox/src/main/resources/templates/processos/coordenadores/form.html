@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt_BR"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Distribuir processo'">
+  <body>
+    <section layout:fragment="content" class="py-4">
+      <div class="container-fluid">
+        <div class="cards-form card border-0 shadow-sm">
+          <div class="card-body">
+
+            <!-- Cabeçalho -->
+            <div class="mb-3">
+              <h1 class="h4 mb-1 text-dark">Distribuir Processo</h1>
+              <p class="text-dark small mb-0">
+                Atribua um relator ao processo selecionado.
+              </p>
+            </div>
+
+            <!-- Resumo do processo -->
+            <div class="mb-3">
+              <div class="p-3 rounded border bg-light">
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Processo</span><br>
+                      <span class="fw-semibold text-primary">
+                        #<span th:text="${processo.numero}">ABC1234</span>
+                      </span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Assunto</span><br>
+                      <span class="fw-semibold"
+                            th:text="${processo.assunto != null ? processo.assunto.nome : '—'}">
+                        Assunto aqui
+                      </span>
+                    </p>
+
+                    <p class="mb-2">
+                      <span class="text-muted small text-uppercase">Aluno interessado</span><br>
+                      <span class="fw-semibold"
+                            th:text="${processo.alunoInteressado != null ? processo.alunoInteressado.nome : '—'}">
+                        Nome do aluno
+                      </span>
+                    </p>
+                  </div>
+
+                <div class="col-md-6">
+                  <p class="mb-2">
+                    <span class="text-muted small text-uppercase">Data de Criação</span><br>
+                    <span class="fw-semibold"
+                          th:text="${processo.dataCriacao != null ? #temporals.format(processo.dataCriacao, 'dd/MM/yyyy') : '—'}">
+                      --/--/----
+                    </span>
+                  </p>
+
+                  <p class="mb-0">
+                        <span class="text-muted small text-uppercase">Status</span><br>
+                        <span class="badge rounded-pill"
+                              th:text="${processo.status}"
+                              th:classappend="${processo.status.name() == 'CRIADO' ? ' bg-secondary-subtle text-secondary'
+                                : processo.status.name() == 'DISTRIBUIDO' ? ' bg-primary-subtle text-primary'
+                                : processo.status.name() == 'DISPONIVEL' ? ' bg-success-subtle text-success'
+                                : processo.status.name() == 'EM_PAUTA' ? ' bg-warning-subtle text-warning'
+                                : processo.status.name() == 'JULGADO' ? ' bg-dark-subtle text-dark'
+                                : ' bg-secondary-subtle text-secondary'}">
+                          --
+                        </span>
+                      </p>
+                    </div>
+                </div>
+
+                <hr class="my-3">
+
+                <p class="mb-0">
+                  <span class="text-muted small text-uppercase">Descrição</span><br>
+                  <span th:text="${processo.descricao}">
+                    Descrição do processo
+                  </span>
+                </p>
+
+              </div>
+            </div>
+
+            <!-- FORM GET: só para escolher o colegiado e recarregar -->
+            <form th:action="@{/coordenadores/distribuir/{id}(id=${processo.id})}"
+                  method="get"
+                  class="row g-3">
+
+              <div class="col-12">
+                <label for="colegiadoId"
+                       class="form-label small text-uppercase text-dark">
+                  Escolha o colegiado
+                </label>
+
+                <select id="colegiadoId"
+                        name="colegiadoId"
+                        class="form-select"
+                        onchange="this.form.submit()">
+
+                  <option value="">Selecione...</option>
+
+                  <th:block th:each="col : ${colegiados}">
+                    <option th:value="${col.id}"
+                            th:text="${col.descricao}"
+                            th:selected="${col.id == colegiadoSelecionadoId}">
+                    </option>
+                  </th:block>
+
+                </select>
+              </div>
+            </form>
+
+            <!-- FORM POST: salvar a distribuição -->
+            <form th:action="@{/coordenadores/distribuir/{id}(id=${processo.id})}"
+                  method="post"
+                  class="row g-3 mt-2">
+
+              <!-- mantém o colegiado escolhido -->
+              <input type="hidden"
+                     name="colegiadoId"
+                     th:value="${colegiadoSelecionadoId}" />
+
+              <div class="col-12">
+                <label for="professorId"
+                       class="form-label small text-uppercase text-dark">
+                  Escolha o relator
+                </label>
+
+                <select id="professorId"
+                        name="professorId"
+                        class="form-select"
+                        th:disabled="${#lists.isEmpty(professoresColegiado)}"
+                        required>
+
+                  <option value="">Selecione...</option>
+
+                  <th:block th:each="prof : ${professoresColegiado}">
+                    <option th:value="${prof.id}"
+                            th:text="${prof.nome}">
+                    </option>
+                  </th:block>
+
+                </select>
+
+                <small class="text-muted"
+                       th:if="${#lists.isEmpty(professoresColegiado)}">
+                  Selecione um colegiado para ver os professores.
+                </small>
+              </div>
+
+              <div class="col-12 mt-3 d-flex justify-content-end gap-2">
+                <a th:href="@{/coordenadores}"
+                   class="btn btn-light border">
+                  Voltar
+                </a>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        th:disabled="${#lists.isEmpty(professoresColegiado)}">
+                  Salvar
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

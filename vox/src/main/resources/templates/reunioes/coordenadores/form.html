@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Cadastro de Reunião de Colegiado'">
+
+<body class="bg-light">
+    <section layout:fragment="content" class="py-4">
+        <div class="container">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h3 class="mb-0 h5"><i class="bi bi-calendar-event me-2"></i>Agendar Nova Reunião</h3>
+                </div>
+                <div class="card-body p-4">
+
+
+                   <!-- FORM GET: só para escolher o colegiado e recarregar -->
+                    <form th:action="@{/coordenadores/reunioes/form}"
+                        method="get"
+                        class="row g-3">
+
+                        <div class="col-12">
+                            <label for="colegiadoId"
+                                class="form-label small text-uppercase text-dark">
+                            Escolha o colegiado
+                            </label>
+
+                            <select id="colegiadoId"
+                                    name="colegiadoId"
+                                    class="form-select"
+                                    onchange="this.form.submit()">
+
+                            <option value="">Selecione...</option>
+
+                            <th:block th:each="col : ${colegiados}">
+                                <option th:value="${col.id}"
+                                        th:text="${col.descricao}"
+                                        th:selected="${col.id == colegiadoSelecionadoId}">
+                                </option>
+                            </th:block>
+
+                            </select>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <!-- =========================
+                         FORM POST: salva a reunião
+                         ========================= -->
+                    <form th:action="@{/coordenadores/reunioes/save}" method="post" th:object="${reuniao}">
+                        <input type="hidden" name="colegiadoId" th:value="${colegiadoSelecionadoId}" />
+                        <!-- Data da sessão -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase">Data da Sessão</label>
+                                <input type="date" th:field="*{data}" class="form-control" required />
+                                <p class="text-danger small" th:if="${#fields.hasErrors('data')}" th:errors="*{data}"></p>
+                            </div>
+                        </div>
+
+                        <!-- Membros do colegiado para votação -->
+                        <div class="mb-4" th:if="${!#lists.isEmpty(membros)}">
+                            <label class="form-label fw-bold small text-uppercase">Membros do Colegiado para votação:</label>
+                            <div class="form-check" th:each="m : ${membros}">
+                                <input class="form-check-input" type="checkbox" 
+                                    th:id="'membro-' + ${m.id}" 
+                                    th:name="membrosSelecionados" 
+                                    th:value="${m.id}" 
+                                    th:checked="${membrosSelecionados != null and #lists.contains(membrosSelecionados, m.id)}">
+                                <label class="form-check-label" th:for="'membro-' + ${m.id}" 
+                                    th:text="${m.nome}">Nome do membro</label>
+                            </div>
+                        </div>
+
+                        <!-- Processos disponíveis para os membros -->
+                        <div class="mb-4" th:if="${!#lists.isEmpty(processosItens)}">
+                            <label class="form-label fw-bold small text-uppercase">Pautas Disponíveis:</label>
+                            <div class="form-check" th:each="p : ${processosItens}">
+                                <input class="form-check-input" type="checkbox" 
+                                    th:id="'processo-' + ${p.id}" 
+                                    th:name="processosSelecionados" 
+                                    th:value="${p.id}" 
+                                    th:checked="${processosSelecionados != null and #lists.contains(processosSelecionados, p.id)}">
+                                <label class="form-check-label" th:for="'processo-' + ${p.id}">
+                                    <strong th:text="${p.numero}">#1234</strong> - 
+                                    <span th:text="${p.assunto.nome}">Assunto do processo</span> | 
+                                    Relator: <span th:text="${p.relator.nome}">Professor</span>
+                                </label>
+                            </div>
+                        </div>
+
+
+                        <!-- Botões -->
+                        <div class="d-flex justify-content-end mt-3 gap-2">
+                            <a th:href="@{/coordenadores/reunioes}" class="btn btn-light border">Cancelar</a>
+                            <button type="submit" class="btn btn-primary" th:disabled="${#lists.isEmpty(membros) or #lists.isEmpty(processosItens)}">
+                                Confirmar Agendamento
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

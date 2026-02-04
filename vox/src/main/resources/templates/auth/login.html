@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt_BR" xmlns:th="http://www.thymeleaf.org">
+
+  <head>
+    <meta th:insert="~{fragments/head(titulo='Login')}">
+  </head>
+
+  <body class="auth-body d-flex align-items-center justify-content-center">
+    <div class="auth-wrapper">
+      <form class="auth-card" th:action="@{/auth/login}" method="POST">
+        <div class="text-center mb-4">
+          <img class="mb-3 auth-logo" th:src="@{/imagens/logo-ofic.png}" alt="Logo do Vox"/>
+          <h1 class="h4 mb-1 auth-title">Bem-vindo ao Vox</h1>
+          <p class="small mb-0"> Faça login para acessar o painel acadêmico.</p>
+        </div>
+
+        <div th:if="${not #strings.isEmpty(mensagem)}" th:utext="${mensagem}" class="alert alert-danger alert-dismissible fade show small" role="alert"></div>
+
+        <div class="mb-3 text-start">
+          <label for="email" class="form-label small text-uppercase"> Email</label>
+          <div class="input-group input-group-sm auth-input-group">
+            <span class="input-group-text">
+              <i class="bi bi-envelope"></i>
+            </span>
+            <input type="email" name="username" id="email" class="form-control auth-input" placeholder="seu.email@instituicao.br" required autofocus />
+          </div>
+        </div>
+
+        <div class="mb-3 text-start">
+          <label for="senha" class="form-label small text-uppercase">Senha</label>
+          <div class="input-group input-group-sm auth-input-group">
+            <span class="input-group-text">
+              <i class="bi bi-lock"></i>
+            </span>
+            <input type="password" name="password" id="senha" class="form-control auth-input" placeholder="Digite sua senha" required/>
+          </div>
+        </div>
+        <div role="alert" th:if="${param.error}" class="alert alert-danger alert-dismissible fade show"> Login e/ou senha inválidos!</div>
+        <br>
+        <button class="btn btn-primary w-100 auth-btn" type="submit">
+          Entrar
+        </button>
+  
+        <p class="text-center small mt-3 mb-0"> © <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2026</span>
+          Vox · Sistema Acadêmico
+        </p>
+      </form>
+    </div>
+     <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

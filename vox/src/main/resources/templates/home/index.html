@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}"
+      th:with="titulo='Página Inicial'">
+  <body>
+
+   <section layout:fragment="content" class="py-5">
+      <div class="container">
+        <div class="card border-primary bg-white text-primary shadow-sm">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h1 class="display-5 fw-bold" style="font-family: 'Fugaz One', cursive; color:#0d6efd;">Vox</h1>
+                <p class="lead mb-0" style="color:#0d6efd;">
+                  Sistema para gerenciar processos acadêmicos: crie processos, acompanhe status, atribua relatórios e gere pareceres.
+                </p>
+              </div>
+              <div class="col-md-4 text-center d-none d-md-block">
+                <img th:src="@{/imagens/img.svg}" alt="Vox" class="img-fluid" style="max-height:400px; width:auto; object-fit:contain;" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
