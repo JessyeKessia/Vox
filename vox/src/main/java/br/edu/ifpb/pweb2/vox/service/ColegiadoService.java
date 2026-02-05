@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +32,10 @@ public class ColegiadoService {
 
     public List<Colegiado> findAll() {
         return colegiadoRepository.findAll();
+    }
+
+    public Page<Colegiado> findAll(Pageable pageable) {
+        return colegiadoRepository.findAll(pageable);
     }
 
     public Colegiado findById(Long id) {

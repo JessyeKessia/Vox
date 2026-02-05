@@ -32,7 +32,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:each="a : ${assuntos}">
+                  <tr th:each="a : ${assuntos.content}">
                     <td class="fw-semibold" th:text="${a.nome}">-</td>
                     <td class="text-end">
                       <a th:href="@{/admin/assuntos/edit/{id}(id=${a.id})}" class="btn btn-sm btn-outline-primary me-1">
@@ -43,9 +43,22 @@
                       </a>
                     </td>
                   </tr>
-                  <tr th:if="${assuntos.size() == 0}">
+                  <tr th:if="${assuntos.totalElements == 0}">
                     <td colspan="2" class="text-center text-muted py-4">
                       Nenhum assunto encontrado.
+                    </td>
+                  </tr>
+                  <tr th:if="${assuntos.totalElements > 0}">
+                    <td colspan="2" class="text-center py-3">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          Mostrando página <span th:text="${assuntos.number + 1}"></span> de <span th:text="${assuntos.totalPages}"></span>
+                        </div>
+                        <div>
+                          <a th:if="${!assuntos.first}" th:href="@{/admin/assuntos(page=${assuntos.number - 1},size=${assuntos.size})}" class="btn btn-sm btn-outline-secondary me-1">Anterior</a>
+                          <a th:if="${!assuntos.last}" th:href="@{/admin/assuntos(page=${assuntos.number + 1},size=${assuntos.size})}" class="btn btn-sm btn-outline-secondary">Próximo</a>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
