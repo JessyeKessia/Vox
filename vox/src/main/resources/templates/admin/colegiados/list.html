@@ -39,7 +39,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:each="c : ${colegiados}">
+                  <tr th:each="c : ${colegiados.content}">
                     <td class="fw-semibold" th:text="${c.descricao}"></td>
                     <td th:text="${c.portaria}"></td>
                     <td th:text="${c.curso}"></td>
@@ -94,9 +94,22 @@
                       </a>
                     </td>
                   </tr>
-                  <tr th:if="${colegiados.size() == 0}">
+                  <tr th:if="${colegiados.totalElements == 0}">
                     <td colspan="6" class="text-center text-muted py-4">
                       Nenhum colegiado encontrado.
+                    </td>
+                  </tr>
+                  <tr th:if="${colegiados.totalElements > 0}">
+                    <td colspan="7" class="text-center py-3">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          Mostrando página <span th:text="${colegiados.number + 1}"></span> de <span th:text="${colegiados.totalPages}"></span>
+                        </div>
+                        <div>
+                          <a th:if="${!colegiados.first}" th:href="@{/admin/colegiados(page=${colegiados.number - 1},size=${colegiados.size})}" class="btn btn-sm btn-outline-secondary me-1">Anterior</a>
+                          <a th:if="${!colegiados.last}" th:href="@{/admin/colegiados(page=${colegiados.number + 1},size=${colegiados.size})}" class="btn btn-sm btn-outline-secondary">Próximo</a>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 </tbody>

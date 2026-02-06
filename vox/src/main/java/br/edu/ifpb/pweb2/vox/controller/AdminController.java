@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 
 import br.edu.ifpb.pweb2.vox.entity.Assunto;
@@ -45,9 +48,14 @@ public class AdminController {
     }
     
     @GetMapping("/usuarios")
-    public ModelAndView listarUsuarios() {
+    public ModelAndView listarUsuarios(
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
         ModelAndView mv = new ModelAndView("admin/usuarios/list");
-        mv.addObject("usuarios", usuarioService.findAll());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Usuario> usuariosPage = usuarioService.findAll(pageable);
+        mv.addObject("usuarios", usuariosPage);
         return mv;
     }
     
@@ -125,9 +133,14 @@ public class AdminController {
        ========================= */
 
     @GetMapping("/colegiados")
-    public ModelAndView listarColegiados() {
+    public ModelAndView listarColegiados(
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
         ModelAndView mv = new ModelAndView("admin/colegiados/list");
-        mv.addObject("colegiados", colegiadoService.findAll());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Colegiado> colegiadosPage = colegiadoService.findAll(pageable);
+        mv.addObject("colegiados", colegiadosPage);
         return mv;
     }
 
@@ -217,9 +230,14 @@ public class AdminController {
      ========================= */
     
     @GetMapping("/assuntos")
-    public ModelAndView listarAssuntos() {
+    public ModelAndView listarAssuntos(
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
         ModelAndView mv = new ModelAndView("admin/assuntos/list");
-        mv.addObject("assuntos", assuntoService.findAll());
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Assunto> assuntosPage = assuntoService.findAll(pageable);
+        mv.addObject("assuntos", assuntosPage);
         return mv;
     }
 
