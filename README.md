@@ -63,3 +63,36 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar 
 
 ## Licença
 Este projeto está licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+
+**Contribuição**
+<table>
+  <tr>
+   <td align="center">
+      <a href="https://github.com/jessyekessia" title="gitHub">
+        <img src="https://avatars.githubusercontent.com/u/128109017?v=4" width="100px;" alt="Foto de Jessye"/><br>
+        <sub>
+          <b>Jessye Késsia Pereira</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Maira-larissa" title="gitHub">
+        <img src="https://avatars.githubusercontent.com/u/131016411?v=4" width="100px;" alt="Foto de Maira"/><br>
+        <sub>
+          <b>Maira Larissa</b>
+        </sub>
+      </a>
+    </td>
+     <td align="center">
+      <a href="https://github.com/iamjonn" title="gitHub">
+        <img src="https://avatars.githubusercontent.com/u/110827553?v=4" width="100px;" alt="Foto de Jon"/><br>
+        <sub>
+          <b>Jonata Nascimento</b>
+        </sub>
+      </a>
+    </td>
+      </a>
+    </td>
+  </tr>
+</table>
+
